@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.2
+Date: 2024-12-28
+  Features:
+    - The mod now automatically recognizes resources added from other mods
+  Debug:
+    - Identifying circular dependencies for refining recipes of modded items should now be clearer when the game crashes (https://mods.factorio.com/mod/promethium-quality/discussion/67704c79f934f2a791830eaa)
+---------------------------------------------------------------------------------------------------
 Version: 0.8.1
 Date: 2024-12-28
   Bugfixes:

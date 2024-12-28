@@ -7,7 +7,8 @@ end
 --- @class RefineRecipesContext
 --- @field complexity table<string, number|"skip">
 --- @field memoizing_complexity table<string, number>
---- @field skipped_recipes table<string, boolean>
+--- @field impossible_recipes table<string, boolean>
+--- @field visited_recipes table<string, boolean>
 
 --- @type table<string, number|"skip">
 local base_complexity = {
@@ -121,7 +122,8 @@ local base_complexity = {
     ["promethium-science-pack"]         = math.pow(20   , 1.1111111) * 5 - 0.01
 }
 
--- Ripped out of how quality works
+-- Ripped out of recycling recipe generation
+-- Thank you factorio devs >.<
 local function get_prototype(name, base_prototype)
     for type_name in pairs(defines.prototypes[base_prototype]) do
         local prototypes = data.raw[type_name]
@@ -130,111 +132,6 @@ local function get_prototype(name, base_prototype)
         end
     end
 end
---- @param ctx RefineRecipesContext
---- @param recipe data.RecipePrototype
-local function is_suitable_recipe(ctx, recipe)
-    if ctx.skipped_recipes[recipe.name] ~= nil
-        then return false end
-    if recipe.ingredients == nil or #recipe.ingredients == 0
-        then return false end
-    if recipe.category == "recycling"
-        then return false end
-    for i = 1, #recipe.ingredients do
-        if recipe.ingredients[i].type == "item"
-            then return true end
-    end
-    return false
-end
---- @param ctx RefineRecipesContext
---- @param recipe data.RecipePrototype
---- @param item_name string|nil
-local function is_craft_recipe_for(ctx, recipe, item_name)
-    if not is_suitable_recipe(ctx, recipe)
-        then return false end
-    for i = 1, #recipe.ingredients do
-        local ingredient = recipe.ingredients[i]
-        if ingredient.type == "item" and ingredient.name == item_name then
-            return false
-        end
-    end
-    for i = 1, #recipe.results do
-        local result = recipe.results[i]
-        if result.type == "item" and result.name == item_name then
-            return true
-        end
-    end
-    return false
-end
---- @param ctx RefineRecipesContext
---- @param ingredient data.IngredientPrototype
---- @param depth number
-local function memoize_complexity_for(ctx, ingredient, depth)
-    if depth >= 100 then error("call stack!") end
-    if ctx.complexity[ingredient.name] ~= nil
-        then return end
-    if ingredient.type ~= "item"
-        then return end
-    for _, recipe in pairs(data.raw["recipe"]) do
-        if is_craft_recipe_for(ctx, recipe, ingredient.name) then
-            mark_refinable_items(ctx, recipe, depth + 1)
-        end
-    end
-end
---- @param ctx RefineRecipesContext
---- @param result data.ProductPrototype
---- @param total number
-function set_complexity_for(ctx, result, total)
-    if result.type ~= "item"
-        then return end
-    if get_prototype(result.name, "item") == nil
-        then return end
-    if ctx.complexity[result.name] ~= nil
-        then return end
-    total = total / (result.amount or result.amount_min or 1)
-    if ctx.memoizing_complexity[result.name] ~= nil and ctx.memoizing_complexity[result.name] <= total
-        then return end
-    ctx.memoizing_complexity[result.name] = total
-end
---- @param ctx RefineRecipesContext
---- @param recipe data.RecipePrototype
---- @param depth number
-function mark_refinable_items(ctx, recipe, depth)
-    if not is_suitable_recipe(ctx, recipe) then
-        ctx.skipped_recipes[recipe.name] = true
-        return
-    end
-    local total_complexity = 0
-    for i = 1, #recipe.ingredients do
-        local ingredient = recipe.ingredients[i]
-        if ingredient.type == "item" then
-            memoize_complexity_for(ctx, ingredient, depth)
-
-            if ctx.complexity[ingredient.name] == nil then
-                print_if_debug("recipe "..recipe.name.." won't be used to make refining because "..ingredient.name.." complexity is nil")
-                ctx.skipped_recipes[recipe.name] = true
-                return
-            end
-            if ctx.complexity[ingredient.name] == "skip" then
-                print_if_debug("recipe "..recipe.name.." won't be used to make refining because "..ingredient.name.." cannot be refined")
-                ctx.skipped_recipes[recipe.name] = true
-                return
-            end
-            total_complexity = total_complexity + ingredient.amount * ctx.complexity[ingredient.name]
-        end
-    end
-    for i = 1, #recipe.results do
-        set_complexity_for(ctx, recipe.results[i], total_complexity)
-    end
-    for item_name, final_complexity in pairs(ctx.memoizing_complexity) do
-        ctx.complexity[item_name] = final_complexity
-    end
-    for item_name in pairs(ctx.memoizing_complexity) do
-        ctx.memoizing_complexity[item_name] = nil
-    end
-end
-
--- Ripped out of recycling recipe geenration
--- Thank you factorio devs >.<
 local function generate_refining_recipe_icon(item)
     local icons = table.deepcopy(item.icons or {{icon = item.icon, icon_size = item.icon_size or defines.default_icon_size}})
     for _, icon in ipairs(icons) do
@@ -272,6 +169,161 @@ local function get_item_localised_name(name)
     end
     return prototype and prototype.localised_name or {type_name.."-name."..name}
 end
+
+--- @param ctx RefineRecipesContext
+--- @param recipe data.RecipePrototype
+local function is_suitable_recipe(ctx, recipe)
+    if ctx.impossible_recipes[recipe.name] ~= nil
+        then return false end
+    if recipe.ingredients == nil or #recipe.ingredients == 0
+        then return false end
+    if recipe.category == "recycling"
+        then return false end
+    for i = 1, #recipe.ingredients do
+        if recipe.ingredients[i].type == "item"
+            then return true end
+    end
+    return false
+end
+--- @param ctx RefineRecipesContext
+--- @param recipe data.RecipePrototype
+--- @param item_name string|nil
+local function is_craft_recipe_for(ctx, recipe, item_name)
+    if not is_suitable_recipe(ctx, recipe)
+        then return false end
+    for i = 1, #recipe.ingredients do
+        local ingredient = recipe.ingredients[i]
+        if ingredient.type == "item" and ingredient.name == item_name then
+            return false
+        end
+    end
+    for i = 1, #recipe.results do
+        local result = recipe.results[i]
+        if result.type == "item" and result.name == item_name then
+            return true
+        end
+    end
+    return false
+end
+
+--- @param ctx RefineRecipesContext
+local function advance_memoization_step(ctx)
+    for item_name, final_complexity in pairs(ctx.memoizing_complexity) do
+        ctx.complexity[item_name] = final_complexity
+    end
+    for item_name in pairs(ctx.memoizing_complexity) do
+        ctx.memoizing_complexity[item_name] = nil
+    end
+    for recipe_name in pairs(ctx.visited_recipes) do
+        ctx.visited_recipes[recipe_name] = nil
+    end
+end
+
+--- @param ctx RefineRecipesContext
+--- @param resource data.ResourceEntityPrototype
+local function assign_modded_base_complexity(ctx, resource)
+    local base_complexity = resource.minable.mining_time / 2
+
+    if resource.minable.result ~= nil then
+        if get_prototype(resource.minable.result, "item") == nil
+            then return end
+        set_complexity_for(ctx, {
+            type = "item",
+            name = resource.minable.result,
+            amount = resource.minable.count or 1
+        }, base_complexity)
+        return
+    end
+    for i = 1, #resource.minable.results do
+        set_complexity_for(ctx, resource.minable.results[i], base_complexity)
+    end
+
+    advance_memoization_step(ctx)
+end
+--- @param ctx RefineRecipesContext
+--- @param ingredient data.IngredientPrototype
+--- @param depth number
+local function memoize_complexity_for(ctx, ingredient, depth)
+    print_if_debug("depth="..depth.." memoize_complexity_for "..ingredient.name)
+    if ingredient.type ~= "item"
+        then return end
+    if ctx.complexity[ingredient.name] ~= nil
+        then return end
+    local suitable_recipes = 0
+    for _, recipe in pairs(data.raw["recipe"]) do
+        if is_craft_recipe_for(ctx, recipe, ingredient.name) then
+            suitable_recipes = suitable_recipes + 1
+            mark_refinable_items(ctx, recipe, depth + 1)
+        end
+    end
+end
+--- @param ctx RefineRecipesContext
+--- @param result data.ProductPrototype
+--- @param total number
+function set_complexity_for(ctx, result, total)
+    if result.type ~= "item"
+        then return end
+    if get_prototype(result.name, "item") == nil
+        then return end
+    if ctx.complexity[result.name] ~= nil
+        then return end
+    total = total / (result.amount or result.amount_min or 1)
+    if ctx.memoizing_complexity[result.name] ~= nil and ctx.memoizing_complexity[result.name] <= total
+        then return end
+    print_if_debug("set_complexity_for "..result.name.." "..total)
+    ctx.memoizing_complexity[result.name] = total
+end
+
+--- @param ctx RefineRecipesContext
+--- @param recipe data.RecipePrototype
+--- @param depth number
+function mark_refinable_items(ctx, recipe, depth)
+    if not is_suitable_recipe(ctx, recipe) then
+        ctx.impossible_recipes[recipe.name] = true
+        return
+    end
+    if ctx.visited_recipes[recipe.name] ~= nil then
+        local attempted_recipes = {}
+        for recipe_name in pairs(ctx.visited_recipes)
+            do attempted_recipes[#attempted_recipes+1] = recipe_name end
+        local attempted_recipes_str = table.concat(attempted_recipes, ", ")
+        local error_msg = "There is a circular dependency between recipes ["..attempted_recipes_str.."], triggered by ["..recipe.name.."], which has no way of resolving."
+        error_msg = error_msg.."\nMost likely the mod isn't aware of a modded raw resource, and as such is unable to autogenerate refining recipes for the production chain."
+        error_msg = error_msg.."\nPlease report this crash along with all mods that add new content or change recipes, so that they can be properly supported"
+        error(error_msg)
+    end
+    ctx.visited_recipes[recipe.name] = true
+
+    print_if_debug("depth="..depth.." mark_refinable_items "..recipe.name)
+
+    local total_complexity = 0
+    for i = 1, #recipe.ingredients do
+        local ingredient = recipe.ingredients[i]
+        if ingredient.type == "item" then
+            memoize_complexity_for(ctx, ingredient, depth)
+
+            if ctx.complexity[ingredient.name] == nil then
+                print_if_debug("recipe "..recipe.name.." won't be used to make refining because "..ingredient.name.." complexity is nil")
+                ctx.impossible_recipes[recipe.name] = true
+                return
+            end
+            if ctx.complexity[ingredient.name] == "skip" then
+                print_if_debug("recipe "..recipe.name.." won't be used to make refining because "..ingredient.name.." cannot be refined")
+                ctx.impossible_recipes[recipe.name] = true
+                return
+            end
+            total_complexity = total_complexity + ingredient.amount * ctx.complexity[ingredient.name]
+        end
+    end
+    for i = 1, #recipe.results do
+        set_complexity_for(ctx, recipe.results[i], total_complexity)
+    end
+
+    advance_memoization_step(ctx)
+end
+
+--- @param ctx RefineRecipesContext
+--- @param item_name string
 function create_refining_recipe(ctx, item_name)
     local final_time = ctx.complexity[item_name]
     if final_time == "skip" or final_time == nil
@@ -317,6 +369,7 @@ end
 
 return {
     base_complexity = base_complexity,
+    assign_modded_base_complexity = assign_modded_base_complexity,
 
     mark_refinable_items = mark_refinable_items,
     create_refining_recipe = create_refining_recipe

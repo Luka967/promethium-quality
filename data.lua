@@ -298,6 +298,3 @@ data:extend({{
         ingredients = table.deepcopy(data.raw["technology"]["research-productivity"].unit.ingredients)
     }
 }})
--- Changes
-data.raw["technology"]["epic-quality"].localised_name = {"changed-quality-name.epic-technology"}
-data.raw["technology"]["legendary-quality"].localised_name = {"changed-quality-name.legendary-technology"}
