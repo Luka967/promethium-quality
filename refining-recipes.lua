@@ -1,4 +1,4 @@
-local is_debugging = true
+local is_debugging = false
 function print_if_debug(s)
     if not is_debugging then return end
     print(s)
@@ -286,7 +286,7 @@ function create_refining_recipe(ctx, item_name)
     else
         final_time = math.ceil(final_time / 5) * 5      -- Above 30s: round up by 5
     end
-    local fluid_requirement = math.min(10 * final_time, 1200)
+    local fluid_requirement = math.min(final_time, 1200)
     print_if_debug("final refine recipe for "..item_name.." has "..ctx.complexity[item_name].." complexity -> "..final_time.."s craft time")
 
     local refine_recipe_name = item_name .. "-refining"

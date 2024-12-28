@@ -40,6 +40,7 @@ data:extend({{
         secondary_draw_orders = {north = -2}
     }},
 
+    heating_energy = "100kW",
     energy_usage = "3.5MW",
     energy_source = {
         type = "electric",
@@ -173,7 +174,7 @@ data:extend({{
 
 -- Changes
 data.raw["item"]["promethium-asteroid-chunk"].spoil_result = "oxide-asteroid-chunk"
-data.raw["item"]["promethium-asteroid-chunk"].spoil_ticks = 1 * hour
+data.raw["item"]["promethium-asteroid-chunk"].spoil_ticks = 2 * hour
 
 ------------------------------ Fluids
 data:extend({{
@@ -183,7 +184,7 @@ data:extend({{
     subgroup = "fluid",
     order = "b[new-fluid]-e[aquilo]-h[promethium-emulsion]",
     default_temperature = -200,
-    heat_capacity = "20MJ",
+    heat_capacity = "0.01kW",
     base_color = {106, 18, 38},
     flow_color = {106, 18, 38},
     auto_barrel = false
@@ -216,7 +217,7 @@ data:extend({{
         {type = "item", name = "promethium-asteroid-chunk", amount = 1},
     },
     results = {
-        {type = "fluid", name = "promethium-emulsion", amount = 1200}
+        {type = "fluid", name = "promethium-emulsion", amount = 600}
     },
     allow_productivity = true,
     crafting_machine_tint =
