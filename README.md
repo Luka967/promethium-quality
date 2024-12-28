@@ -2,12 +2,13 @@ You realize the properties of the Promethium asteroid chunk can subtly improve t
 
 This mod adds a new machine to the end-game, the **Refinery**. You unlock it after researching promethium science, alongside research productivity.
 
-![Refinery preview](https://files.catbox.moe/8vety7.png)
+![Refinery preview](https://files.catbox.moe/7wyhip.png)
 
 It has a base quality effect of +100%. Out of the box, it directly **upgrades an item to the next quality level**, **with no resource loss**.
 
 This technology however, comes with **three major caveats**:
-- **Promethium chunks now spoil to an oxide chunk** - its special effects wither away after 2 hours.
+
+- **Promethium chunks spoil to an oxide chunk**, from the beginning - its special effects wither away after 2 hours.
 - Even though most items can be refined - even science packs - their refining time also depends on all the ingredients of the production chain.
 - 1 promethium chunk satsifies 1 Refinery for 10 minutes of constant operation. If you use them extensively, you're gonna have to design logistics for delivering promethium chunks, of all things, to your planets.
 
@@ -17,7 +18,7 @@ This technology however, comes with **three major caveats**:
 
 - This mod has no control behaviors; it's purely based off prototypes.
 - Science packs have hard-coded refining times to make ratio calculations ever so slightly easier, so you can at least expect some consistency when playing with quality and crazy SPM.
-- Refining end products is faster than it should actually be. Tier 3 modules with crafting speed 1 still take 5 *whole* minutes though!
+- Refining end products is faster than it should actually be. Tier 3 modules with crafting speed 1 still take 5 whole minutes though!
 - Refining uranium-235 is not possible. You're forced to setup quality Kovarex enrichment process instead. As such, any end products that need uranium-235 - Portable fission reactor, Spidertron and Biolab - are not directly refinable.
 - Refining ammo and explosives in general is slow due to their delicate nature, and so that you can't cheese your way out of military research for space platforms.
 - Organic items can be refined, but eggs and fish don't play well - they are way slower.
