@@ -295,7 +295,7 @@ data:extend({{
     unit = {
         count_formula = "10000",
         time = 120,
-        ingredients = data.raw["technology"]["research-productivity"].unit.ingredients
+        ingredients = table.deepcopy(data.raw["technology"]["research-productivity"].unit.ingredients)
     }
 }})
 -- Changes

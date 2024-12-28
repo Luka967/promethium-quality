@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.1
+Date: 2024-12-28
+  Bugfixes:
+    - Properly copy required science ingredients for Refinery technology, fixing compatibility with atan-nuclear-science (https://mods.factorio.com/mod/promethium-quality/discussion/676fbcd31673236545d810d1)
+---------------------------------------------------------------------------------------------------
 Version: 0.8.0
 Date: 2024-12-28
   Features:
