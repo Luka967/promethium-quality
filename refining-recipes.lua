@@ -220,26 +220,31 @@ local function advance_memoization_step(ctx)
 end
 
 --- @param ctx RefineRecipesContext
---- @param resource data.ResourceEntityPrototype
-local function assign_modded_base_complexity(ctx, resource)
-    local base_complexity = resource.minable.mining_time / 2
+--- @param minable data.MinableProperties
+--- @param multiplier number
+local function set_complexity_from_minable(ctx, minable, multiplier)
+    if minable == nil
+        then return end
+    local base_complexity = minable.mining_time * multiplier
+    print_if_debug("set_complexity_from_minable triggered with multiplier "..multiplier)
 
-    if resource.minable.result ~= nil then
-        if get_prototype(resource.minable.result, "item") == nil
+    if minable.result ~= nil then
+        if get_prototype(minable.result, "item") == nil
             then return end
         set_complexity_for(ctx, {
             type = "item",
-            name = resource.minable.result,
-            amount = resource.minable.count or 1
+            name = minable.result,
+            amount = minable.count or 1
         }, base_complexity)
+        print_if_debug("set_complexity_from_minable "..minable.result.." base complexity "..base_complexity)
         return
     end
-    for i = 1, #resource.minable.results do
-        set_complexity_for(ctx, resource.minable.results[i], base_complexity)
+    for i = 1, #minable.results do
+        print_if_debug("set_complexity_from_minable "..minable.results[i].name.." base complexity "..base_complexity)
+        set_complexity_for(ctx, minable.results[i], base_complexity)
     end
-
-    advance_memoization_step(ctx)
 end
+
 --- @param ctx RefineRecipesContext
 --- @param ingredient data.IngredientPrototype
 --- @param depth number
@@ -369,8 +374,9 @@ end
 
 return {
     base_complexity = base_complexity,
-    assign_modded_base_complexity = assign_modded_base_complexity,
+    set_complexity_from_minable = set_complexity_from_minable,
 
+    advance_memoization_step = advance_memoization_step,
     mark_refinable_items = mark_refinable_items,
     create_refining_recipe = create_refining_recipe
 }

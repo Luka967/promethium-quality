@@ -26,7 +26,7 @@ This technology however, comes with **three major caveats**:
 
 # Missing / experimental features
 
-- Compatibility with other mods was not tested at all.
+- Report other incompatible mods! Because of how refining recipes are generated, some modded items might be impossible to refine, or the mod would outright crash the game.
 - Refine time balancing was not exhaustively tested, for now it's merely eyeballed. Think of it as a proof-of-concept until it has its 1.0 release!
 - Sound effects of the Refinery may change in the future if I find better samples to play with.
 - The Refinery can freeze on Aquilo but has no frozen cover.

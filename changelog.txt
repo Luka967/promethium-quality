@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.3
+Date: 2024-12-29
+  Features:
+    - The mod now automatically recognizes minable plants, units and asteroid chunks added from other mods
+---------------------------------------------------------------------------------------------------
 Version: 0.8.2
 Date: 2024-12-28
   Features:
