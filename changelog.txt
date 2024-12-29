@@ -1,4 +1,21 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.4
+Date: 2024-12-29
+  Features:
+    - The mod now automatically recognizes recipes from entities that spawn items out of "thin air"
+    - All modded science packs now have a default refining time of 5 seconds
+    - Modded smelting recipes now contribute to overall end product refining time
+    - Other mods can now opt-out or set their own complexity for an item
+  Changes:
+    - Mod should no longer crash on startup when it sees an incompatible circular dependency
+  Balancing:
+    - Probabilities are now considered when calculating refining time
+    - Wood can now be refined
+    - Refining time for ammo has changed, since it's now automatically generated
+    - The mod will now also artificially inflate any new modded ammo items
+    - Pentapod egg, Biter egg and Raw fish now have the same 75s refining time
+    - Asteroid chunks now all have the same refining time
+---------------------------------------------------------------------------------------------------
 Version: 0.8.3
 Date: 2024-12-29
   Features:
