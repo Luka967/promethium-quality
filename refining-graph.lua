@@ -10,7 +10,7 @@
 
 require("refining-utility")
 
-local is_debugging = true
+local is_debugging = false
 local function print_if_debug(s)
     if not is_debugging then return end
     print(s)
