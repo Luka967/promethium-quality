@@ -18,11 +18,11 @@ This technology however, comes with **three major caveats**:
 
 - This mod has no control behaviors; it's purely based off prototypes.
 - Science packs have hard-coded refining times to make ratio calculations ever so slightly easier, so you can at least expect some consistency when playing with quality and crazy SPM.
-- Refining end products is faster than it should actually be. Tier 3 modules with crafting speed 1 still take 5 whole minutes though!
+- Refining end products is faster than it should actually be. Tier 3 modules with crafting speed 1 still take 10 whole minutes though!
 - Refining uranium-235 is not possible. You're forced to setup quality Kovarex enrichment process instead. As such, any end products that need uranium-235 - Portable fission reactor, Spidertron and Biolab - are not directly refinable.
 - Refining ammo and explosives in general is slow due to their delicate nature, and so that you can't cheese your way out of military research for space platforms.
 - Organic items can be refined, but eggs and fish don't play well - they are way slower.
-- Some end products that gain no perks from quality - tiles, elevated rail support/ramp, transport belts and similar - can't be refined.
+- Some end products that gain no perks from quality - tiles, transport belts and similar - can't be refined.
 
 # Missing / experimental features
 

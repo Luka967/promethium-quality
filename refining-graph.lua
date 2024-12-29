@@ -10,7 +10,7 @@
 
 require("refining-utility")
 
-local is_debugging = false
+local is_debugging = true
 local function print_if_debug(s)
     if not is_debugging then return end
     print(s)
@@ -196,8 +196,10 @@ local function create_refining_recipe(g, item_name)
 
     local final_time = item_resolved.complexity
     final_time = math.pow(final_time / 5, 0.9)
-    if final_time < 1 then
-        final_time = math.ceil(final_time * 10) / 10    --   0s -  1s: round up by .1
+    if final_time <= 0.5 then
+        final_time = math.ceil(final_time * 20) / 20    -- Under 0.5s: round up by .05
+    elseif final_time <= 1 then
+        final_time = math.ceil(final_time * 10) / 10    -- 0.5s -  1s: round up by .1
     elseif final_time <= 10 then
         final_time = math.ceil(final_time * 2) / 2      --   1s - 10s: round up by .5
     elseif final_time <= 30 then
@@ -220,7 +222,7 @@ local function create_refining_recipe(g, item_name)
         icons = generate_refining_recipe_icon(item_resolved.prototype),
         energy_required = final_time,
         enabled = false,
-        hidden = true,
+        hidden = not is_debugging,
         unlock_results = false,
         ingredients = {
             {type = "fluid", name = "promethium-emulsion", amount = fluid_requirement},

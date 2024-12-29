@@ -179,8 +179,9 @@ data.raw["item"]["promethium-asteroid-chunk"].spoil_ticks = 2 * hour
 -- Base refining complexities
 data.raw["item"]["holmium-plate"].refine_complexity = 2 -- Scrap recycling will be ignored. We need to set base complexity to holmium plate
 data.raw["item"]["pentapod-egg"].refine_complexity = 600 -- This won't get picked up properly
-data.raw["item"]["sulfur"].refine_complexity = 30 -- Artificially inflate explosives
+data.raw["item"]["sulfur"].refine_complexity = 30 -- Artificially inflate
 data.raw["item"]["uranium-238"].refine_complexity = 120
+data.raw["item"]["lithium"].refine_complexity = 10 -- Artificially inflate
 -- Science packs get predetermined refining times
 data.raw["tool"]["automation-science-pack"].refine_complexity = utility.refine_time(0.5)
 data.raw["tool"]["logistic-science-pack"].refine_complexity = utility.refine_time(1)
