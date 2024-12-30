@@ -116,10 +116,6 @@ local function memoize_item(g, item_name)
     end
     print_if_debug("memoize_item "..item_name.." depth="..#g.item_resolve_stack.." #available_recipes="..#available_recipes)
 
-    if item_name == "plastic-bar" then
-        print("booya")
-    end
-
     local lowest_complexity = nil
     local lowest_ingredient_fluids = nil
     for i = 1, #available_recipes do
