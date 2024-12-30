@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.6
+Date: 2024-12-30
+  Features:
+    - The mod now generates refining recipes for items that are derived only from fluids
+  Balancing:
+    - Refining time calculation now prefers walking through production chain that has the least amount of fluids. This fixes base alternate recipes involving molten iron/copper being picked
+  Bugfixes:
+    - Fixed possible crashes where recipes with energy_required as nil get wrongly picked up
+    - Fixed plastic bar and ice having absurdly low refining time
+    - Fixed solid fuel, scrap and uranium ore being able to be refined
+    - Fixed refining time for base items getting set more than once
+---------------------------------------------------------------------------------------------------
 Version: 0.8.5
 Date: 2024-12-29
   Bugfixes:

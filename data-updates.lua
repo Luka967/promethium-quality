@@ -10,6 +10,14 @@ local g = {
 }
 
 print("Mod list: "..serpent.block(mods))
+
+log("Autosetting complexity to science packs")
+
+-- Assign default 5 second refining time to new science packs
+for _, item in pairs(data.raw["tool"]) do
+    item.refine_complexity = item.refine_complexity or utility.refine_time(5)
+end
+
 log("Grabbing preset refine props")
 
 -- Predefined complexity goes first
@@ -26,7 +34,7 @@ for type_name in pairs(defines.prototypes["item"]) do
     grab_refine_props(type_name)
 end
 
-log("Setting complexity from supported obtainables")
+log("Autosetting complexity from supported obtainables")
 
 -- Assign base complexity to items that can come from these prototypes:
 for _, resource in pairs(data.raw["resource"]) do
@@ -45,14 +53,7 @@ for _, resource in pairs(data.raw["plant"]) do
     refining_recipes.set_complexity_from_minable(g, resource.name, resource.minable, 200) -- 0.5s for 50x fruit -> 2 complexity
 end
 
-log("Setting complexity to science packs")
-
--- Assign default 5 second refining time to new science packs
-for _, item in pairs(data.raw["tool"]) do
-    item.refine_complexity = item.refine_complexity or utility.refine_time(5)
-end
-
-log("Setting complexity from generator recipes")
+log("Autosetting complexity from generator recipes")
 
 -- Recipes that generate products out of thin air
 -- such as egg breeding in captive spawner, 10s for 5 -> 600 complexity
@@ -63,20 +64,37 @@ for _, recipe in pairs(data.raw["recipe"]) do
     end
 end
 
-log("Setting complexity from smelting recipes")
+log("Autosetting complexity from smelting recipes")
 
 -- Vanilla ore 0.5 -> plate 1 complexity
 for _, recipe in pairs(data.raw["recipe"]) do
-    if recipe.category == "smelting" and recipe.ingredients ~= nil and #recipe.ingredients == 1 then
-        local multiplier = 1 / 3.2
+    if
+        utility.recipe_has_basics(recipe)
+        and recipe.category == "smelting"
+        and #utility.recipe_ingredients(recipe, "item") == 1
+        and #utility.recipe_ingredients(recipe, "fluid") == 0
+    then
+        local multiplier = 2 * (1 / 3.2)
 
         -- Has the ingredient already been given complexity?
-        local ingredient_1 = recipe.ingredients[1]
-        if ingredient_1.type == "item" and g.items_resolved[ingredient_1.name] ~= nil then
-            multiplier = multiplier * g.items_resolved[ingredient_1.name].complexity
+        local ingredient = recipe.ingredients[1]
+        if ingredient.type == "item" and g.items_resolved[ingredient.name] ~= nil then
+            multiplier = multiplier * g.items_resolved[ingredient.name].complexity
         end
 
         refining_recipes.set_complexity_from_recipe(g, recipe, multiplier)
+    end
+end
+
+log("Autosetting complexity from fluid-only recipes")
+
+for _, recipe in pairs(data.raw["recipe"]) do
+    if
+        utility.recipe_has_basics(recipe)
+        and #utility.recipe_ingredients(recipe, "item") == 0
+        and #utility.recipe_ingredients(recipe, "fluid") > 0
+    then
+        refining_recipes.set_complexity_from_recipe(g, recipe, 1)
     end
 end
 

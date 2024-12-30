@@ -177,7 +177,9 @@ data.raw["item"]["promethium-asteroid-chunk"].spoil_result = "oxide-asteroid-chu
 data.raw["item"]["promethium-asteroid-chunk"].spoil_ticks = 2 * hour
 
 -- Base refining complexities
-data.raw["item"]["holmium-plate"].refine_complexity = 2 -- Scrap recycling will be ignored. We need to set base complexity to holmium plate
+data.raw["item"]["ice"].refine_complexity = 1
+data.raw["item"]["plastic-bar"].refine_complexity = 1 -- The two base recipes will conflict with each other
+data.raw["item"]["holmium-plate"].refine_complexity = 1 -- Scrap recycling will be ignored. We need to set base complexity to holmium plate
 data.raw["item"]["pentapod-egg"].refine_complexity = 600 -- This won't get picked up properly
 data.raw["item"]["sulfur"].refine_complexity = 30 -- Artificially inflate
 data.raw["item"]["uranium-238"].refine_complexity = 120
@@ -197,8 +199,10 @@ data.raw["tool"]["cryogenic-science-pack"].refine_complexity = utility.refine_ti
 data.raw["tool"]["promethium-science-pack"].refine_complexity = utility.refine_time(20)
 
 -- Intentionally disabled refining
+data.raw["item"]["scrap"].auto_refine = false
 data.raw["item"]["uranium-ore"].auto_refine = false -- Force Kovarex enrichment process
 data.raw["item"]["uranium-235"].auto_refine = false
+data.raw["item"]["solid-fuel"].auto_refine = false
 data.raw["item"]["rocket-fuel"].auto_refine = false -- By default rocket fuel should have no refining recipe but Gleba's biochemical one gets picked up
 data.raw["item"]["iron-bacteria"].auto_refine = false -- Just refine ores bro
 data.raw["item"]["copper-bacteria"].auto_refine = false

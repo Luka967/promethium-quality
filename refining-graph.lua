@@ -9,6 +9,7 @@
 --- @field recipes_visited table<string, boolean>
 
 require("refining-utility")
+local utility = require("utility")
 
 local is_debugging = false
 local function print_if_debug(s)
@@ -61,6 +62,8 @@ local function set_item_complexity(g, item_prototype, complexity)
         error_msg = error_msg.."\nPlease report this to the Promethium is Quality mod discussion and list what other mods you had enabled."
         error(error_msg)
     end
+    if g.items_resolved[item_prototype.name] ~= nil
+        then return end
     g.items_resolved[item_prototype.name] = {
         complexity = complexity,
         prototype = item_prototype
@@ -99,7 +102,7 @@ local function memoize_item(g, item_name)
     table.insert(g.item_resolve_stack, item_name)
     print_if_debug("memoize_item "..item_name.." depth="..#g.item_resolve_stack.." multiplier="..complexity_multiplier)
 
-    --- @type data.RecipePrototype[]
+    --- @type table<number, data.RecipePrototype>
     local available_recipes = {}
     for recipe_name, recipe in pairs(data.raw["recipe"]) do
         if can_visit_recipe(g, recipe, item_name) then
@@ -113,7 +116,12 @@ local function memoize_item(g, item_name)
     end
     print_if_debug("memoize_item "..item_name.." depth="..#g.item_resolve_stack.." #available_recipes="..#available_recipes)
 
+    if item_name == "plastic-bar" then
+        print("booya")
+    end
+
     local lowest_complexity = nil
+    local lowest_ingredient_fluids = nil
     for i = 1, #available_recipes do
         local recipe = data.raw["recipe"][available_recipes[i]]
         local recipe_result
@@ -123,7 +131,14 @@ local function memoize_item(g, item_name)
                 then recipe_result = product break end
         end
         local recipe_complexity = compute_complexity(g, recipe.ingredients, recipe_result)
-        lowest_complexity = math.min(lowest_complexity or recipe_complexity, recipe_complexity)
+
+        local recipe_ingredient_fluids = #utility.recipe_ingredients(recipe, "fluid")
+        if lowest_ingredient_fluids == nil or recipe_ingredient_fluids < lowest_ingredient_fluids then
+            lowest_complexity = recipe_complexity
+            lowest_ingredient_fluids = recipe_ingredient_fluids
+        elseif recipe_ingredient_fluids == lowest_ingredient_fluids then
+            lowest_complexity = math.min(lowest_complexity or recipe_complexity, recipe_complexity)
+        end
     end
 
     if lowest_complexity ~= nil then
@@ -197,7 +212,7 @@ local function create_refining_recipe(g, item_name)
     local final_time = item_resolved.complexity
     final_time = math.pow(final_time / 5, 0.9)
     if final_time <= 0.5 then
-        final_time = math.ceil(final_time * 20) / 20    -- Under 0.5s: round up by .05
+        final_time = math.ceil(final_time * 40) / 40    -- Under 0.5s: round up by .025
     elseif final_time <= 1 then
         final_time = math.ceil(final_time * 10) / 10    -- 0.5s -  1s: round up by .1
     elseif final_time <= 10 then
