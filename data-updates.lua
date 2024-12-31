@@ -59,7 +59,8 @@ log("Autosetting complexity from generator recipes")
 -- such as egg breeding in captive spawner, 10s for 5 -> 600 complexity
 for _, recipe in pairs(data.raw["recipe"]) do
     local has_no_ingredients = recipe.ingredients == nil or #recipe.ingredients == 0
-    if has_no_ingredients and recipe.energy_required ~= nil then
+    local has_results = recipe.results ~= nil and #recipe.results > 0
+    if has_no_ingredients and has_results and recipe.energy_required ~= nil then
         refining_recipes.set_complexity_from_recipe(g, recipe, 300)
     end
 end
