@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.9
+Date: 2025-01-04
+  Bugfixes:
+    - Even though mod load should ensure this doesn't happen, signal the Quality mod that refining recipes should not be used for recycling recipes. This might fix https://mods.factorio.com/mod/promethium-quality/discussion/677839138b4762a1103ca529
+---------------------------------------------------------------------------------------------------
 Version: 0.8.8
 Date: 2024-12-31
   Bugfixes:

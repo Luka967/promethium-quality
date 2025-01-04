@@ -235,6 +235,9 @@ local function create_refining_recipe(g, item_name)
         enabled = false,
         hidden = not is_debugging,
         unlock_results = false,
+        -- Quality mod, and by extension recycling recipes, should be loaded before this mod does.
+        -- But in case game whacks load order, make sure these recipes don't get considered
+        auto_recycle = false,
         ingredients = {
             {type = "fluid", name = "promethium-emulsion", amount = fluid_requirement},
             {type = "item", name = item_name, amount = 1}
