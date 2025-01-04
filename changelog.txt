@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.10
+Date: 2025-01-04
+  Minor Features:
+    - Added startup setting "Debug refining graph" allowing you to, albeit very verbosely, check why a specific item is not refinable
+---------------------------------------------------------------------------------------------------
 Version: 0.8.9
 Date: 2025-01-04
   Bugfixes:

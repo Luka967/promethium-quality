@@ -11,12 +11,6 @@
 require("refining-utility")
 local utility = require("utility")
 
-local is_debugging = false
-local function print_if_debug(s)
-    if not is_debugging then return end
-    print(s)
-end
-
 --- @param g RefiningGraph
 --- @param recipe data.RecipePrototype
 --- @param target_item? string
@@ -46,8 +40,10 @@ end
 local function is_recipe_usable(g, recipe)
     for i = 1, #recipe.ingredients do
         local ingredient = recipe.ingredients[i]
-        if ingredient.type == "item" and g.items_resolved[ingredient.name].complexity == nil
-            then return false end
+        if ingredient.type == "item" and g.items_resolved[ingredient.name].complexity == nil then
+            utility.print_if_debug("is_recipe_usable "..recipe.name.." skipped because ingredient "..ingredient.name.." is unusable")
+            return false
+        end
     end
     return true
 end
@@ -72,7 +68,7 @@ local function set_item_complexity(g, item_prototype, complexity)
     if complexity == nil
         then complexity_str = "[unreachable]"
         else complexity_str = complexity end
-    print_if_debug("set_item_complexity "..item_prototype.name.."="..complexity_str)
+    utility.print_if_debug("set_item_complexity "..item_prototype.name.."="..complexity_str)
 end
 local visit_recipe
 --- @param g RefiningGraph
@@ -100,7 +96,7 @@ local function memoize_item(g, item_name)
     if item_type == "ammo" then complexity_multiplier = 6 end
 
     table.insert(g.item_resolve_stack, item_name)
-    print_if_debug("memoize_item "..item_name.." depth="..#g.item_resolve_stack.." multiplier="..complexity_multiplier)
+    utility.print_if_debug("memoize_item "..item_name.." depth="..#g.item_resolve_stack.." multiplier="..complexity_multiplier)
 
     --- @type table<number, data.RecipePrototype>
     local available_recipes = {}
@@ -114,7 +110,7 @@ local function memoize_item(g, item_name)
             end
         end
     end
-    print_if_debug("memoize_item "..item_name.." depth="..#g.item_resolve_stack.." #available_recipes="..#available_recipes)
+    utility.print_if_debug("memoize_item "..item_name.." depth="..#g.item_resolve_stack.." #available_recipes="..#available_recipes)
 
     local lowest_complexity = nil
     local lowest_ingredient_fluids = nil
@@ -151,7 +147,7 @@ visit_recipe = function (g, recipe)
     if not can_visit_recipe(g, recipe)
         then return false end
     g.recipes_visited[recipe.name] = true
-    print_if_debug("visit_recipe "..recipe.name)
+    utility.print_if_debug("visit_recipe "..recipe.name)
 
     for i = 1, #recipe.ingredients do
         local ingredient = recipe.ingredients[i]
@@ -182,7 +178,7 @@ local function set_complexity_from_minable(g, minable_name, minable, multiplier)
     if minable == nil
         then return end
     local complexity = minable.mining_time * multiplier
-    print_if_debug("set_complexity_from_minable "..minable_name.." complexity="..complexity)
+    utility.print_if_debug("set_complexity_from_minable "..minable_name.." complexity="..complexity)
 
     local product_list = minable.results or {{type = "item", name = minable.result, amount = minable.count or 1}}
     set_complexity_from_products(g, product_list, complexity)
@@ -194,7 +190,7 @@ local function set_complexity_from_recipe(g, recipe, multiplier)
     if recipe == nil
         then return end
     local complexity = recipe.energy_required * multiplier
-    print_if_debug("set_complexity_from_recipe "..recipe.name.." complexity="..complexity)
+    utility.print_if_debug("set_complexity_from_recipe "..recipe.name.." complexity="..complexity)
     set_complexity_from_products(g, recipe.results, complexity)
 end
 
@@ -221,7 +217,7 @@ local function create_refining_recipe(g, item_name)
         final_time = math.ceil(final_time / 10) * 10    -- Above 120s: round up by 10
     end
     local fluid_requirement = math.min(final_time, 1200)
-    print_if_debug("create_refining_recipe "..item_name.." complexity "..item_resolved.complexity.." -> "..final_time.."s")
+    utility.print_if_debug("create_refining_recipe "..item_name.." complexity "..item_resolved.complexity.." -> "..final_time.."s")
 
     local refine_recipe_name = item_name .. "-refining"
     data:extend({{
@@ -233,7 +229,7 @@ local function create_refining_recipe(g, item_name)
         icons = generate_refining_recipe_icon(item_resolved.prototype),
         energy_required = final_time,
         enabled = false,
-        hidden = not is_debugging,
+        hidden = not utility.is_debugging,
         unlock_results = false,
         -- Quality mod, and by extension recycling recipes, should be loaded before this mod does.
         -- But in case game whacks load order, make sure these recipes don't get considered

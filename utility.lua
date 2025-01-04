@@ -1,3 +1,9 @@
+local is_debugging = settings.startup["debug-refining-graph"].value
+local function print_if_debug(s)
+    if not is_debugging then return end
+    log(s)
+end
+
 --- Inverse function of complexity->refine time
 --- @param s number
 local function refine_time(s)
@@ -39,6 +45,8 @@ end
 
 return {
     refine_time = refine_time,
+    is_debugging = is_debugging,
+    print_if_debug = print_if_debug,
 
     recipe_has_basics = recipe_has_basics,
     recipe_ingredients = recipe_ingredients,
