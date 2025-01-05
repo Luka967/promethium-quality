@@ -40,7 +40,9 @@ end
 local function is_recipe_usable(g, recipe)
     for i = 1, #recipe.ingredients do
         local ingredient = recipe.ingredients[i]
-        if ingredient.type == "item" and g.items_resolved[ingredient.name].complexity == nil then
+        -- This can be nil if it was tried to be visited twice by some recipe loop
+        local resolved_ingredient = g.items_resolved[ingredient.name]
+        if ingredient.type == "item" and (resolved_ingredient == nil or resolved_ingredient.complexity == nil) then
             utility.print_if_debug("is_recipe_usable "..recipe.name.." skipped because ingredient "..ingredient.name.." is unusable")
             return false
         end
@@ -76,6 +78,13 @@ local visit_recipe
 local function memoize_item(g, item_name)
     if g.items_resolved[item_name] ~= nil
         then return end
+
+    -- If we try memoize an item twice we'll lose knowledge of recipes already visited and available on the second pass
+    for i = 1, #g.item_resolve_stack do
+        if g.item_resolve_stack[i] == item_name
+            then return end
+    end
+
     local item_prototype, item_type = get_prototype(item_name, "item")
     if item_prototype == nil
         then return end

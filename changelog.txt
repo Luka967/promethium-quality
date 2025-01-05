@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.11
+Date: 2025-01-05
+  Bugfixes:
+    - Fixed flaw in refining time calculation logic that could make items referenced by looping recipes not refinable. This fixes Maraxsis compatibility for carbon fiber (https://mods.factorio.com/mod/promethium-quality/discussion/6778a764a4b563f1270adeb7)
+---------------------------------------------------------------------------------------------------
 Version: 0.8.10
 Date: 2025-01-04
   Minor Features:
