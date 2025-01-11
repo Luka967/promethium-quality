@@ -8,7 +8,7 @@ It has a base quality effect of +100%. Out of the box, it directly **upgrades an
 
 This technology however, also comes with **four major caveats**:
 
-- **Promethium chunks spoil to an oxide chunk**, from the beginning - its special effects wither away after 2 hours.
+- **Promethium chunks spoil to an oxide chunk**, from the beginning - its special effects wither away after 2 hours. You can turn this off in mod settings.
 - **Speed module effects break the upgrade guarantee** since they reduce quality chance on any and all machines.
 - Even though most items can be refined - even science packs - their refining time also depends on all the ingredients of the production chain.
 - 1 promethium chunk satsifies 1 Refinery for 10 minutes of constant operation. If you use them extensively, you're gonna have to design logistics for delivering promethium chunks, of all things, to your planets.

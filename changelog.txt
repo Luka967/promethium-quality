@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.13
+Date: 2025-01-11
+  Features:
+    - Added startup setting to change promethium chunk spoil time. May also be turned off by setting to zero
+---------------------------------------------------------------------------------------------------
 Version: 0.8.12
 Date: 2025-01-05
   Locale:

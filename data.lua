@@ -173,8 +173,11 @@ data:extend({{
 }})
 
 -- Changes
-data.raw["item"]["promethium-asteroid-chunk"].spoil_result = "oxide-asteroid-chunk"
-data.raw["item"]["promethium-asteroid-chunk"].spoil_ticks = 2 * hour
+local spoil_hours = settings.startup["promethium-chunk-spoil-time"].value
+if spoil_hours ~= 0 then
+    data.raw["item"]["promethium-asteroid-chunk"].spoil_result = "oxide-asteroid-chunk"
+    data.raw["item"]["promethium-asteroid-chunk"].spoil_ticks = spoil_hours * hour
+end
 
 -- Base refining complexities
 data.raw["item"]["ice"].refine_complexity = 1
