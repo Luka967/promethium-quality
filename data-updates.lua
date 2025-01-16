@@ -87,8 +87,9 @@ for _, recipe in pairs(data.raw["recipe"]) do
 
         -- Has the ingredient already been given complexity?
         local ingredient = recipe.ingredients[1]
-        if ingredient.type == "item" and g.items_resolved[ingredient.name] ~= nil then
-            multiplier = multiplier * g.items_resolved[ingredient.name].complexity
+        local item_graphed = g.items_resolved[ingredient.name]
+        if ingredient.type == "item" and item_graphed ~= nil and item_graphed.complexity ~= nil then
+            multiplier = multiplier * item_graphed.complexity
         end
 
         refining_recipes.set_complexity_from_recipe(g, recipe, multiplier)
