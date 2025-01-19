@@ -1,5 +1,13 @@
 local utility = require("utility")
 
+local modifiers = utility.get_startup_settings()
+utility.print_if_debug("[#1] Startup settings")
+for key, value in pairs(modifiers) do
+    utility.print_if_debug(key.."="..serpent.line(value))
+end
+
+utility.print_if_debug("[#2] Mod list:\n"..serpent.block(mods))
+
 ------------------------------ Entities
 local sounds = {
     refinery_pick = {
@@ -173,10 +181,9 @@ data:extend({{
 }})
 
 -- Changes
-local spoil_hours = settings.startup["promethium-chunk-spoil-time"].value
-if spoil_hours ~= 0 then
+if modifiers.promethium_spoil_time ~= 0 then
     data.raw["item"]["promethium-asteroid-chunk"].spoil_result = "oxide-asteroid-chunk"
-    data.raw["item"]["promethium-asteroid-chunk"].spoil_ticks = spoil_hours * hour
+    data.raw["item"]["promethium-asteroid-chunk"].spoil_ticks = modifiers.promethium_spoil_time
 end
 
 -- Base refining complexities

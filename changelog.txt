@@ -1,4 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.15
+Date: 2025-01-19
+  Features:
+    - Added startup settings that modify refining time, for those who want it easier or harder
+---------------------------------------------------------------------------------------------------
+Version: 0.8.14
+Date: 2025-01-16
+  Bugfixes:
+    - Fixed crash when incorporating modded smelting recipe
+---------------------------------------------------------------------------------------------------
 Version: 0.8.13
 Date: 2025-01-11
   Features:

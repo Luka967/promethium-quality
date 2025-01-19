@@ -11,6 +11,8 @@
 require("refining-utility")
 local utility = require("utility")
 
+local modifiers = utility.get_startup_settings()
+
 --- @param g RefiningGraph
 --- @param recipe data.RecipePrototype
 --- @param target_item? string
@@ -210,8 +212,9 @@ local function create_refining_recipe(g, item_name)
     if item_resolved.complexity == nil
         then return end
 
-    local final_time = item_resolved.complexity
-    final_time = math.pow(final_time / 5, 0.9)
+    local final_time = modifiers.refine_hardness * item_resolved.complexity
+    final_time = math.pow(final_time / 5, modifiers.refine_lean)
+    final_time = final_time * modifiers.refine_multiplier
     if final_time <= 0.5 then
         final_time = math.ceil(final_time * 40) / 40    -- Under 0.5s: round up by .025
     elseif final_time <= 1 then

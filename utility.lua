@@ -4,12 +4,6 @@ local function print_if_debug(s)
     log(s)
 end
 
---- Inverse function of complexity->refine time
---- @param s number
-local function refine_time(s)
-    return math.pow(s, 1 / 0.9) * 5 * 0.999 -- So that they round up properly
-end
-
 ---@param recipe data.RecipePrototype
 local function recipe_has_basics(recipe)
     return recipe.ingredients ~= nil
@@ -43,6 +37,30 @@ local function recipe_results(recipe, type)
     return ret
 end
 
+local function get_startup_settings()
+    local debug_graph = not not settings.startup["promethium-chunk-spoil-time"].value
+    local promethium_spoil_time = settings.startup["promethium-chunk-spoil-time"].value * hour
+    local refine_hardness = settings.startup["refining-hardness"].value / 100
+    local refine_lean = math.pow(0.9, settings.startup["refining-lean"].value / 100)
+    local refine_multiplier = settings.startup["refining-time-multiplier"].value / 100
+    local modded_science_pack_refine_time = settings.startup["refining-default-science-pack-time"].value * 1
+    return {
+        debug_graph = debug_graph,
+        promethium_spoil_time = promethium_spoil_time,
+        refine_hardness = refine_hardness,
+        refine_lean = refine_lean,
+        refine_multiplier = refine_multiplier,
+        modded_science_pack_refine_time = modded_science_pack_refine_time
+    }
+end
+
+--- Inverse function of complexity->refine time
+--- @param s number
+local function refine_time(s)
+    local modifiers = get_startup_settings()
+    return math.pow(s, 1 / modifiers.refine_lean) * 5 * 0.999 -- So that they round up properly
+end
+
 return {
     refine_time = refine_time,
     is_debugging = is_debugging,
@@ -50,5 +68,7 @@ return {
 
     recipe_has_basics = recipe_has_basics,
     recipe_ingredients = recipe_ingredients,
-    recipe_results = recipe_results
+    recipe_results = recipe_results,
+
+    get_startup_settings = get_startup_settings
 }
