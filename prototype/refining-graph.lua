@@ -8,8 +8,8 @@
 --- @field recipes_skipped table<string, boolean>
 --- @field recipes_visited table<string, boolean>
 
-require("refining-utility")
-local utility = require("utility")
+local refining_util = require("refining-utility")
+local utility = require("__promethium-quality__.utility")
 
 local modifiers = utility.get_startup_settings()
 
@@ -74,10 +74,25 @@ local function set_item_complexity(g, item_prototype, complexity)
         else complexity_str = complexity end
     utility.print_if_debug("set_item_complexity "..item_prototype.name.."="..complexity_str)
 end
+
+local memoize_item
+
+--- @param g RefiningGraph
+--- @param unspoiled_prototype data.ItemPrototype
+--- @param item_name string
+local function is_unspoiled_of(g, unspoiled_prototype, item_name)
+    if unspoiled_prototype.spoil_result ~= item_name
+        then return end
+    memoize_item(g, unspoiled_prototype.name)
+    local resolved = g.items_resolved[unspoiled_prototype.name]
+    return resolved ~= nil and resolved.complexity ~= nil
+end
+
 local visit_recipe
+
 --- @param g RefiningGraph
 --- @param item_name string
-local function memoize_item(g, item_name)
+memoize_item = function (g, item_name)
     if g.items_resolved[item_name] ~= nil
         then return end
 
@@ -87,7 +102,7 @@ local function memoize_item(g, item_name)
             then return end
     end
 
-    local item_prototype, item_type = get_prototype(item_name, "item")
+    local item_prototype, item_type = refining_util.get_prototype(item_name, "item")
     if item_prototype == nil
         then return end
 
@@ -109,7 +124,7 @@ local function memoize_item(g, item_name)
     table.insert(g.item_resolve_stack, item_name)
     utility.print_if_debug("memoize_item "..item_name.." depth="..#g.item_resolve_stack.." multiplier="..complexity_multiplier)
 
-    --- @type table<number, data.RecipePrototype>
+    --- @type table<number, string>
     local available_recipes = {}
     for recipe_name, recipe in pairs(data.raw["recipe"]) do
         if can_visit_recipe(g, recipe, item_name) then
@@ -123,8 +138,26 @@ local function memoize_item(g, item_name)
     end
     utility.print_if_debug("memoize_item "..item_name.." depth="..#g.item_resolve_stack.." #available_recipes="..#available_recipes)
 
+    --- @type table<number, data.ItemPrototype>
+    local unspoiled_sources = {}
+    for type_name in pairs(defines.prototypes["item"]) do
+        if data.raw[type_name] ~= nil then
+            for _, unspoiled_prototype in pairs(data.raw[type_name]) do
+                if is_unspoiled_of(g, unspoiled_prototype, item_name) then
+                    table.insert(unspoiled_sources, unspoiled_prototype)
+                end
+            end
+        end
+    end
+    utility.print_if_debug("memoize_item "..item_name.." depth="..#g.item_resolve_stack.." #unspoiled_sources="..#unspoiled_sources)
+
     local lowest_complexity = nil
     local lowest_ingredient_fluids = nil
+    for i = 1, #unspoiled_sources do
+        local unspoiled_complexity = g.items_resolved[unspoiled_sources[i].name].complexity
+        lowest_ingredient_fluids = 0
+        lowest_complexity = math.min(lowest_complexity or unspoiled_complexity, unspoiled_complexity)
+    end
     for i = 1, #available_recipes do
         local recipe = data.raw["recipe"][available_recipes[i]]
         local recipe_result
@@ -133,7 +166,7 @@ local function memoize_item(g, item_name)
             if product.type == "item" and product.name == item_name
                 then recipe_result = product break end
         end
-        local recipe_complexity = compute_complexity(g, recipe.ingredients, recipe_result)
+        local recipe_complexity = refining_util.compute_complexity(g, recipe.ingredients, recipe_result)
 
         local recipe_ingredient_fluids = #utility.recipe_ingredients(recipe, "fluid")
         if lowest_ingredient_fluids == nil or recipe_ingredient_fluids < lowest_ingredient_fluids then
@@ -174,9 +207,9 @@ local function set_complexity_from_products(g, products, complexity)
     for i = 1, #products do
         local product = products[i]
         if product.type == "item" then
-            local item_prototype = get_prototype(product.name, "item")
+            local item_prototype = refining_util.get_prototype(product.name, "item")
             if item_prototype ~= nil then
-                set_item_complexity(g, item_prototype, compute_complexity_totaled(complexity, product))
+                set_item_complexity(g, item_prototype, refining_util.compute_complexity_totaled(complexity, product))
             end
         end
     end
@@ -235,10 +268,10 @@ local function create_refining_recipe(g, item_name)
     data:extend({{
         type = "recipe",
         name = refine_recipe_name,
-        localised_name = {"recipe-name.refining", get_item_localised_name(item_name)},
+        localised_name = {"recipe-name.refining", refining_util.get_item_localised_name(item_name)},
         category = "refining",
         icon = nil,
-        icons = generate_refining_recipe_icon(item_resolved.prototype),
+        icons = refining_util.generate_refining_recipe_icon(item_resolved.prototype),
         energy_required = final_time,
         enabled = false,
         hidden = not utility.is_debugging,

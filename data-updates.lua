@@ -1,5 +1,5 @@
 local utility = require("utility")
-local refining_recipes = require("refining-graph")
+local refining_recipes = require("prototype.refining-graph")
 
 --- @type RefiningGraph
 local g = {
@@ -9,7 +9,7 @@ local g = {
     recipes_visited = {}
 }
 
-utility.print_if_debug("[#3] Autosetting complexity to science packs")
+utility.print_if_debug("[#3.1] Autosetting complexity to science packs")
 
 local modifiers = utility.get_startup_settings()
 for _, item in pairs(data.raw["tool"]) do
@@ -19,7 +19,7 @@ for _, item in pairs(data.raw["tool"]) do
     end
 end
 
-utility.print_if_debug("[#4] Grabbing preset refine props")
+utility.print_if_debug("[#3.2] Grabbing preset refine props")
 
 -- Predefined complexity goes first
 local function grab_refine_props(type_name)
@@ -35,7 +35,7 @@ for type_name in pairs(defines.prototypes["item"]) do
     grab_refine_props(type_name)
 end
 
-utility.print_if_debug("[#5] Autosetting complexity from supported obtainables")
+utility.print_if_debug("[#3.3] Autosetting complexity from supported obtainables")
 
 -- Assign base complexity to items that can come from these prototypes:
 for _, resource in pairs(data.raw["resource"]) do
@@ -59,7 +59,7 @@ for _, resource in pairs(data.raw["plant"]) do
     utility.print_if_debug("Triggered for plant "..resource.name)
 end
 
-utility.print_if_debug("[#6] Autosetting complexity from generator recipes")
+utility.print_if_debug("[#3.4] Autosetting complexity from generator recipes")
 
 -- Recipes that generate products out of thin air
 -- such as egg breeding in captive spawner, 10s for 5 -> 600 complexity
@@ -71,7 +71,7 @@ for _, recipe in pairs(data.raw["recipe"]) do
     end
 end
 
-utility.print_if_debug("[#7] Autosetting complexity from smelting recipes")
+utility.print_if_debug("[#3.5] Autosetting complexity from smelting recipes")
 
 -- Vanilla ore 0.5 -> plate 1 complexity
 for _, recipe in pairs(data.raw["recipe"]) do
@@ -96,7 +96,7 @@ end
 
 -- TODO: Fluid-only recipe bases should be considered in graphing step
 -- so that item-based recipes for the same item also contribute
-utility.print_if_debug("[#8] Autosetting complexity from fluid-only recipes")
+utility.print_if_debug("[#3.6] Autosetting complexity from fluid-only recipes")
 
 for _, recipe in pairs(data.raw["recipe"]) do
     if
@@ -108,7 +108,7 @@ for _, recipe in pairs(data.raw["recipe"]) do
     end
 end
 
-utility.print_if_debug("[#9] Autocalculating complexity for other items")
+utility.print_if_debug("[#3.7] Autocalculating complexity for other items")
 
 -- Let it rip!
 for _, recipe in pairs(data.raw["recipe"]) do
@@ -119,10 +119,10 @@ for _, recipe in pairs(data.raw["recipe"]) do
     end
 end
 
-utility.print_if_debug("[#10] Generating refining recipes")
+utility.print_if_debug("[#3.8] Generating refining recipes")
 
 for item_name in pairs(g.items_resolved) do
     refining_recipes.create_refining_recipe(g, item_name)
 end
 
-utility.print_if_debug("[#11] Done")
+utility.print_if_debug("[#3.9] Done")

@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.16
+Date: 2025-02-07
+  Features:
+    - The mod now takes into account spoil results of items
+  Balancing:
+    - Maraxsis sand now has sane refine time
+---------------------------------------------------------------------------------------------------
 Version: 0.8.15
 Date: 2025-01-19
   Features:
