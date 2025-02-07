@@ -264,6 +264,13 @@ local function create_refining_recipe(g, item_name)
     local fluid_requirement = math.min(final_time, 1200)
     utility.print_if_debug("create_refining_recipe "..item_name.." complexity "..item_resolved.complexity.." -> "..final_time.."s")
 
+    local overload_multiplier
+    if final_time <= 180 then
+        overload_multiplier = 0
+    else
+        overload_multiplier = 1
+    end
+
     local refine_recipe_name = item_name .. "-refining"
     data:extend({{
         type = "recipe",
@@ -285,7 +292,8 @@ local function create_refining_recipe(g, item_name)
         },
         results = {
             {type = "item", name = item_name, amount = 1}
-        }
+        },
+        overload_multiplier = overload_multiplier
     }})
     table.insert(data.raw["technology"]["refinery"].effects, {
         type = "unlock-recipe",

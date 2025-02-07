@@ -5,6 +5,8 @@ Date: 2025-02-07
     - The mod now takes into account spoil results of items
   Balancing:
     - Maraxsis sand now has sane refine time
+  Changes:
+    - Automated insertion limit for refining recipes that take 3+ minutes, is now forced to be 1
 ---------------------------------------------------------------------------------------------------
 Version: 0.8.15
 Date: 2025-01-19
