@@ -1,5 +1,6 @@
 local utility = require("utility")
 local refining_recipes = require("prototype.refining-graph")
+local modifiers = utility.get_startup_settings()
 
 --- @type RefiningGraph
 local g = {
@@ -11,11 +12,10 @@ local g = {
 
 utility.print_if_debug("[#3.1] Autosetting complexity to science packs")
 
-local modifiers = utility.get_startup_settings()
 for _, item in pairs(data.raw["tool"]) do
     if item.refine_complexity == nil then
         utility.print_if_debug("Triggered for "..item.name)
-        item.refine_complexity = utility.refine_time(modifiers.modded_science_pack_refine_time)
+        item.refine_complexity = utility.refine_time(modifiers.modded_science_pack_refine_time, modifiers.refine_lean)
     end
 end
 

@@ -26,7 +26,7 @@ data:extend({{
     setting_type = "startup",
     default_value = 100,
     minimum_value = 10,
-    maximum_value = 500,
+    maximum_value = 1000,
     order = "bc"
 }, {
     type = "int-setting",
@@ -38,10 +38,24 @@ data:extend({{
     order = "bd"
 }, {
     type = "int-setting",
+    name = "refining-time-max",
+    setting_type = "startup",
+    default_value = 0,
+    minimum_value = 0,
+    maximum_value = 10,
+    order = "be"
+}, {
+    type = "int-setting",
     name = "refining-default-science-pack-time",
     setting_type = "startup",
     default_value = 5,
     minimum_value = 1,
     maximum_value = 20,
-    order = "be"
+    order = "bf"
+}, {
+    type = "bool-setting",
+    name = "refinery-allow-quality",
+    setting_type = "startup",
+    default_value = false,
+    order = "bg"
 }})

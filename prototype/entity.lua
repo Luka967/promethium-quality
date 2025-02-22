@@ -6,6 +6,14 @@ local refinery_pipe_pictures = {
     west = util.sprite_load("__promethium-quality__/graphics/entity/refinery/pipe-connections/west", {scale = 0.5})
 }
 
+local utility = require("__promethium-quality__.utility")
+local modifiers = utility.get_startup_settings()
+
+local refinery_allowed_effects = {"consumption", "speed", "pollution"}
+if modifiers.refinery_allow_quality then
+    refinery_allowed_effects[4] = "quality"
+end
+
 data:extend({{
     type = "furnace",
     name = "refinery",
@@ -40,11 +48,18 @@ data:extend({{
         }
     },
     module_slots = 3,
-    allowed_effects = {"consumption", "speed", "pollution"},
+    allowed_effects = refinery_allowed_effects,
     effect_receiver = {base_effect = {quality = 10}},
 
     crafting_categories = {"refining"},
     crafting_speed = 1,
+    circuit_wire_max_distance = furnace_circuit_wire_max_distance,
+    circuit_connector = circuit_connector_definitions.create_vector(universal_connector_template, {
+        {variation = 27, main_offset = util.by_pixel(55, 50), shadow_offset = util.by_pixel(0, 0), show_shadow = false},
+        {variation = 27, main_offset = util.by_pixel(55, 50), shadow_offset = util.by_pixel(0, 0), show_shadow = false},
+        {variation = 27, main_offset = util.by_pixel(55, 50), shadow_offset = util.by_pixel(0, 0), show_shadow = false},
+        {variation = 27, main_offset = util.by_pixel(55, 50), shadow_offset = util.by_pixel(0, 0), show_shadow = false},
+    }),
 
     open_sound = sounds.refinery_pick,
     close_sound = sounds.refinery_move,

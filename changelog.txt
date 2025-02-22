@@ -1,12 +1,20 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.17
+Date: 2025-02-22
+  Features:
+    - Refinery can now be circuit connected. Requires Factorio 2.0.35
+  Minor Features:
+    - Added startup setting "Refining time maximum (min)", disabled by default (https://mods.factorio.com/mod/promethium-quality/discussion/679b093fa8a1d84739770001)
+    - Added startup setting "Allow quality effect on Refinery", disabled by default (https://mods.factorio.com/mod/promethium-quality/discussion/67ac5822766e0fe88de264d5)
+---------------------------------------------------------------------------------------------------
 Version: 0.8.16
 Date: 2025-02-07
   Features:
-    - The mod now takes into account spoil results of items
+    - The mod now takes into account spoil results of items (https://mods.factorio.com/mod/promethium-quality/discussion/679b093fa8a1d84739770001)
   Balancing:
-    - Maraxsis sand now has sane refine time
+    - Maraxsis sand now has sane refine time (https://mods.factorio.com/mod/promethium-quality/discussion/679b093fa8a1d84739770001)
   Changes:
-    - Automated insertion limit for refining recipes that take 3+ minutes, is now forced to be 1
+    - Automated insertion limit for refining recipes that take 3+ minutes, is now forced to be 1 (https://mods.factorio.com/mod/promethium-quality/discussion/679e747299654add68a35c7d)
 ---------------------------------------------------------------------------------------------------
 Version: 0.8.15
 Date: 2025-01-19

@@ -43,22 +43,26 @@ local function get_startup_settings()
     local refine_hardness = settings.startup["refining-hardness"].value / 100
     local refine_lean = math.pow(0.9, settings.startup["refining-lean"].value / 100)
     local refine_multiplier = settings.startup["refining-time-multiplier"].value / 100
+    local refine_time_max = settings.startup["refining-time-max"].value * minute
     local modded_science_pack_refine_time = settings.startup["refining-default-science-pack-time"].value * 1
+    local refinery_allow_quality = settings.startup["refinery-allow-quality"]
     return {
         debug_graph = debug_graph,
         promethium_spoil_time = promethium_spoil_time,
         refine_hardness = refine_hardness,
         refine_lean = refine_lean,
         refine_multiplier = refine_multiplier,
-        modded_science_pack_refine_time = modded_science_pack_refine_time
+        refine_time_max = refine_time_max,
+        modded_science_pack_refine_time = modded_science_pack_refine_time,
+        refinery_allow_quality = refinery_allow_quality
     }
 end
 
 --- Inverse function of complexity->refine time
 --- @param s number
-local function refine_time(s)
-    local modifiers = get_startup_settings()
-    return math.pow(s, 1 / modifiers.refine_lean) * 5 * 0.999 -- So that they round up properly
+--- @param refine_lean number
+local function refine_time(s, refine_lean)
+    return math.pow(s, 1 / refine_lean) * 5 * 0.999 -- So that they round up properly
 end
 
 return {
