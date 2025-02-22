@@ -262,7 +262,7 @@ local function create_refining_recipe(g, item_name)
         final_time = math.ceil(final_time / 10) * 10    -- Above 120s: round up by 10
     end
     if modifiers.refine_time_max ~= 0 then
-        final_time = math.min(final_time, modifiers.refine_time_max * minute)
+        final_time = math.min(final_time, modifiers.refine_time_max)
     end
     local fluid_requirement = math.min(final_time, 1200)
     utility.print_if_debug("create_refining_recipe "..item_name.." complexity "..item_resolved.complexity.." -> "..final_time.."s")

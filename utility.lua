@@ -43,7 +43,7 @@ local function get_startup_settings()
     local refine_hardness = settings.startup["refining-hardness"].value / 100
     local refine_lean = math.pow(0.9, settings.startup["refining-lean"].value / 100)
     local refine_multiplier = settings.startup["refining-time-multiplier"].value / 100
-    local refine_time_max = settings.startup["refining-time-max"].value * minute
+    local refine_time_max = settings.startup["refining-time-max"].value * 60
     local modded_science_pack_refine_time = settings.startup["refining-default-science-pack-time"].value * 1
     local refinery_allow_quality = settings.startup["refinery-allow-quality"]
     return {

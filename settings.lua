@@ -37,7 +37,7 @@ data:extend({{
     maximum_value = 500,
     order = "bd"
 }, {
-    type = "int-setting",
+    type = "double-setting",
     name = "refining-time-max",
     setting_type = "startup",
     default_value = 0,
