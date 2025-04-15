@@ -33,12 +33,28 @@ data.raw["item"]["iron-bacteria"].auto_refine = false -- Just refine ores bro
 data.raw["item"]["copper-bacteria"].auto_refine = false
 
 -- Useless on these items
+data.raw["item"]["yumako-seed"].auto_refine = false
+data.raw["item"]["jellynut-seed"].auto_refine = false
 data.raw["item"]["barrel"].auto_refine = false
 data.raw["item"]["rocket-part"].auto_refine = false
 data.raw["capsule"]["cliff-explosives"].auto_refine = false
 data.raw["item"]["fast-transport-belt"].auto_refine = false
 data.raw["item"]["underground-belt"].auto_refine = false
 data.raw["item"]["splitter"].auto_refine = false
+data.raw["item-with-entity-data"]["locomotive"].auto_refine = false
+data.raw["item-with-entity-data"]["cargo-wagon"].auto_refine = data.raw["item-with-entity-data"]["cargo-wagon"].quality_affects_inventory_size
+data.raw["item-with-entity-data"]["fluid-wagon"].auto_refine = data.raw["item-with-entity-data"]["fluid-wagon"].quality_affects_capacity
+data.raw["item"]["rail-signal"].auto_refine = false
+data.raw["item"]["rail-chain-signal"].auto_refine = false
+data.raw["item"]["small-lamp"].auto_refine = false
+data.raw["item"]["arithmetic-combinator"].auto_refine = false
+data.raw["item"]["decider-combinator"].auto_refine = false
+data.raw["item"]["selector-combinator"].auto_refine = false
+data.raw["item"]["constant-combinator"].auto_refine = false
+data.raw["item"]["power-switch"].auto_refine = false
+data.raw["item"]["programmable-speaker"].auto_refine = false
+data.raw["item"]["display-panel"].auto_refine = false
+data.raw["item"]["gate"].auto_refine = false
 
 -- Useless on these tiles
 data.raw["item"]["hazard-concrete"].auto_refine = false

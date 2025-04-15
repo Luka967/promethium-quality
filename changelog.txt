@@ -1,4 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.19
+Date: 2025-04-15
+  Changes:
+    - Disabled refining on many more items on which quality has no effect
+    - Graphics for Refinery have been updated, though there should be no obvious changes
+    - Icon for Promethium chunk melting has been updated
+    - Refinery now filters for Promethium emulsion, it should be more intuitive
+  Bugfixes:
+    - Fixed settings "Debug refining graph" and "Allow quality effect on Refinery" not being read properly
+---------------------------------------------------------------------------------------------------
 Version: 0.8.18
 Date: 2025-02-22
   Bugfixes:

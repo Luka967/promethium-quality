@@ -14,6 +14,39 @@ if modifiers.refinery_allow_quality then
     refinery_allowed_effects[4] = "quality"
 end
 
+--- @param filenames string[]
+--- @param blend_mode data.BlendMode
+--- @param other? data.Animation
+local function create_sprite_layer(filenames, blend_mode, other)
+    local file_count = 0
+    for i, filename_partial in ipairs(filenames) do
+        file_count = file_count + 1
+        filenames[i] = "__promethium-quality__/graphics/entity/refinery/"..filename_partial
+    end
+    other = other or {}
+    --- @type data.Animation
+    local ret = {
+        priority = "high",
+        scale = 0.5,
+        blend_mode = blend_mode,
+        width = 320,
+        height = 320,
+        shift = util.by_pixel_hr(0, 0)
+    }
+    if file_count == 1 then
+        ret.filename = filenames[1]
+    else
+        ret.filenames = filenames
+        ret.line_length = 8
+        ret.lines_per_file = 8
+        ret.frame_count = 100
+    end
+    for key, value in pairs(other) do
+        ret[key] = value
+    end
+    return ret
+end
+
 data:extend({{
     type = "furnace",
     name = "refinery",
@@ -33,6 +66,7 @@ data:extend({{
         pipe_picture = refinery_pipe_pictures,
         volume = 1200,
         pipe_connections = {{flow_direction = "input", direction = defines.direction.north, position = {0, -2}}},
+        filter = "promethium-emulsion",
         secondary_draw_orders = {north = -2}
     }},
 
@@ -76,7 +110,6 @@ data:extend({{
             {sound = {filename = "__promethium-quality__/sound/entity/refinery/door-open.ogg", volume = 0.4}, frame = 68, play_for_working_visualisation = "working", audible_distance_modifier = 0.4},
             {sound = {filename = "__promethium-quality__/sound/entity/refinery/door-close.ogg", volume = 0.4}, frame = 96, play_for_working_visualisation = "working", audible_distance_modifier = 0.4},
         },
-        max_sounds_per_type = 4,
         fade_in_ticks = 10,
         fade_out_ticks = 40
     },
@@ -97,16 +130,15 @@ data:extend({{
     graphics_set = {
         always_draw_idle_animation = true,
         idle_animation = {
-            layers = {{
-                filename = "__promethium-quality__/graphics/entity/refinery/refinery-shadow.png",
-                priority = "high",
-                width = 520,
-                height = 500,
-                frame_count = 1,
-                line_length = 8,
-                draw_as_shadow = true,
-                scale = 0.5
-            }}
+            layers = {
+                create_sprite_layer({
+                    "refinery-shadow.png"
+                }, "normal", {
+                    width = 520,
+                    height = 500,
+                    draw_as_shadow = true
+                })
+            }
         },
         states = {{
             name = "idle",
@@ -124,36 +156,44 @@ data:extend({{
             always_draw = true,
             draw_in_states = {"working"},
             animation = {
-                layers = {util.sprite_load("__promethium-quality__/graphics/entity/refinery/refinery-working", {
-                    frame_count = 99,
-                    animation_speed = 0.1,
-                    scale = 0.5
-                })}
-            }
-        }, {
-            name = "working-lights",
-            always_draw = true,
-            draw_in_states = {"working"},
-            animation = {
-                layers = {util.sprite_load("__promethium-quality__/graphics/entity/refinery/refinery-working-lights", {
-                    frame_count = 99,
-                    animation_speed = 0.1,
-                    draw_as_glow = true,
-                    blend_mode = "additive",
-                    scale = 0.5
-                })}
+                layers = {
+                    create_sprite_layer({
+                        "refinery-working-1.png",
+                        "refinery-working-2.png"
+                    }, "normal"),
+                    create_sprite_layer({
+                        "refinery-lights-heat-1.png",
+                        "refinery-lights-heat-2.png"
+                    }, "additive", {draw_as_glow = true}),
+                    create_sprite_layer({
+                        "refinery-lights-arc-1.png",
+                        "refinery-lights-arc-2.png"
+                    }, "additive", {draw_as_glow = true}),
+                    create_sprite_layer({
+                        "refinery-lights-indicator-1.png",
+                        "refinery-lights-indicator-2.png"
+                    }, "additive", {draw_as_glow = true})
+                }
             }
         }, {
             always_draw = true,
             draw_in_states = {"idle"},
             animation = {
-                layers = {util.sprite_load("__promethium-quality__/graphics/entity/refinery/refinery-working", {
-                    frame_count = 1,
-                    scale = 0.5
-                })}
+                layers = {
+                    create_sprite_layer({
+                        "refinery-shadow.png"
+                    }, "normal", {
+                        width = 520,
+                        height = 500,
+                        draw_as_shadow = true
+                    }),
+                    create_sprite_layer({
+                        "refinery-working-1.png"
+                    }, "normal")
+                }
             }
         }}
     },
     corpse = "big-remnants",
-    dying_explosion = "massive-explosion",
+    dying_explosion = "massive-explosion"
 }})
