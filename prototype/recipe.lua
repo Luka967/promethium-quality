@@ -4,19 +4,13 @@ data:extend({{
 }})
 
 data:extend({{
-    type = "item-subgroup",
-    name = "promethium-processing",
-    group = "space",
-    order = "j"
-}})
-data:extend({{
     type = "recipe",
     name = "promethium-chunk-melting",
     icon = "__promethium-quality__/graphics/icons/promethium-chunk-melting.png",
     icon_size = 64,
     category = "chemistry",
-    subgroup = "promethium-processing",
-    order = "a",
+    subgroup = "space-processing",
+    order = "e",
     energy_required = 60,
     enabled = false,
     ingredients = {
@@ -29,10 +23,10 @@ data:extend({{
     allow_productivity = true,
     crafting_machine_tint =
     {
-      primary = {227, 32, 76, 128},
-      secondary = {163, 83, 101, 128},
-      tertiary = {110, 59, 71, 128},
-      quaternary = {106, 18, 38, 128}
+        primary = {227, 32, 76, 128},
+        secondary = {163, 83, 101, 128},
+        tertiary = {110, 59, 71, 128},
+        quaternary = {106, 18, 38, 128}
     }
 }})
 data:extend({{
@@ -41,8 +35,8 @@ data:extend({{
     icon = "__promethium-quality__/graphics/icons/promethium-chunk-submerging.png",
     icon_size = 64,
     category = "cryogenics",
-    subgroup = "promethium-processing",
-    order = "b",
+    subgroup = "space-processing",
+    order = "f",
     energy_required = 30,
     enabled = false,
     ingredients = {
@@ -55,10 +49,10 @@ data:extend({{
     allow_productivity = true,
     crafting_machine_tint =
     {
-      primary = {227, 32, 76, 128},
-      secondary = {163, 83, 101, 128},
-      tertiary = {110, 59, 71, 128},
-      quaternary = {106, 18, 38, 128}
+        primary = {227, 32, 76, 128},
+        secondary = {163, 83, 101, 128},
+        tertiary = {110, 59, 71, 128},
+        quaternary = {106, 18, 38, 128}
     }
 }})
 

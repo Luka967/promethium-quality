@@ -1,4 +1,19 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.9.0
+Date: 2025-06-09
+  Features:
+    - Refining recipe is now shown in Factoriopedia alongside "Recycling recipes"
+    - Added per-user setting "Blacklist highest quality on input", enabled by default
+  Balancing:
+    - Promethium chunks no longer spoil by default. Existing saves should not be affected and related setting is still there. Purpose is to align mod out-of-the-box as content-only, rather than unwittingly tweak approaching promethium science
+  Changes:
+    - Explanation behind using promethium now has a more realistic, scientific background
+    - Promethium emulsion recipes now sit alongside advanced thruster fuel/oxidizer
+    - Tree seed and pipe to ground can no longer be refined
+  Bugfixes:
+    - Fixed audible distance modifier on refinery sounds
+    - Fixed cargo / fluid wagon refining generating when quality does not give bonus
+---------------------------------------------------------------------------------------------------
 Version: 0.8.19
 Date: 2025-04-15
   Changes:

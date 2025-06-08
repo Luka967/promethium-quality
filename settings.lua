@@ -8,7 +8,7 @@ data:extend({{
     type = "double-setting",
     name = "promethium-chunk-spoil-time",
     setting_type = "startup",
-    default_value = 2,
+    default_value = 0,
     minimum_value = 0,
     maximum_value = 6,
     order = "ba"
@@ -58,4 +58,10 @@ data:extend({{
     setting_type = "startup",
     default_value = false,
     order = "bg"
+}, {
+    type = "bool-setting",
+    name = "refinery-auto-set-input-filter",
+    setting_type = "runtime-per-user",
+    default_value = true,
+    order = "a"
 }})

@@ -1,3 +1,5 @@
+local refining_graph = {}
+
 --- @class RefiningGraphResolvedItem
 --- @field prototype data.ItemPrototype
 --- @field complexity number|nil
@@ -16,7 +18,7 @@ local modifiers = utility.get_startup_settings()
 --- @param g RefiningGraph
 --- @param recipe data.RecipePrototype
 --- @param target_item? string
-local function can_visit_recipe(g, recipe, target_item)
+function refining_graph.can_visit_recipe(g, recipe, target_item)
     if g.recipes_skipped[recipe.name] ~= nil or g.recipes_visited[recipe.name] ~= nil
         then return false end
     if recipe.ingredients == nil or recipe.results == nil
@@ -37,9 +39,10 @@ local function can_visit_recipe(g, recipe, target_item)
     end
     return false
 end
+
 --- @param g RefiningGraph
 --- @param recipe data.RecipePrototype
-local function is_recipe_usable(g, recipe)
+function refining_graph.is_recipe_usable(g, recipe)
     for i = 1, #recipe.ingredients do
         local ingredient = recipe.ingredients[i]
         -- This can be nil if it was tried to be visited twice by some recipe loop
@@ -55,7 +58,7 @@ end
 --- @param g RefiningGraph
 --- @param item_prototype data.ItemPrototype
 --- @param complexity number|nil
-local function set_item_complexity(g, item_prototype, complexity)
+function refining_graph.set_item_complexity(g, item_prototype, complexity)
     if complexity == 0 then
         local item_str = item_prototype.type.."["..item_prototype.name.."]"
         local error_msg = "Bailed out while graphing refining time for items: complexity for "..item_str.." is somehow zero!"
@@ -75,24 +78,20 @@ local function set_item_complexity(g, item_prototype, complexity)
     utility.print_if_debug("set_item_complexity "..item_prototype.name.."="..complexity_str)
 end
 
-local memoize_item
-
 --- @param g RefiningGraph
 --- @param unspoiled_prototype data.ItemPrototype
 --- @param item_name string
-local function is_unspoiled_of(g, unspoiled_prototype, item_name)
+function refining_graph.is_unspoiled_of(g, unspoiled_prototype, item_name)
     if unspoiled_prototype.spoil_result ~= item_name
         then return end
-    memoize_item(g, unspoiled_prototype.name)
+    refining_graph.memoize_item(g, unspoiled_prototype.name)
     local resolved = g.items_resolved[unspoiled_prototype.name]
     return resolved ~= nil and resolved.complexity ~= nil
 end
 
-local visit_recipe
-
 --- @param g RefiningGraph
 --- @param item_name string
-memoize_item = function (g, item_name)
+function refining_graph.memoize_item(g, item_name)
     if g.items_resolved[item_name] ~= nil
         then return end
 
@@ -108,12 +107,12 @@ memoize_item = function (g, item_name)
 
     -- This can be used by mods
     if item_prototype.auto_refine == false then
-        set_item_complexity(g, item_prototype, nil)
+        refining_graph.set_item_complexity(g, item_prototype, nil)
         item_prototype.auto_refine = nil
         return
     end
     if item_prototype.refine_complexity ~= nil then
-        set_item_complexity(g, item_prototype, item_prototype.refine_complexity)
+        refining_graph.set_item_complexity(g, item_prototype, item_prototype.refine_complexity)
         item_prototype.refine_complexity = nil
         return
     end
@@ -127,9 +126,9 @@ memoize_item = function (g, item_name)
     --- @type table<number, string>
     local available_recipes = {}
     for recipe_name, recipe in pairs(data.raw["recipe"]) do
-        if can_visit_recipe(g, recipe, item_name) then
-            visit_recipe(g, recipe)
-            if is_recipe_usable(g, recipe) then
+        if refining_graph.can_visit_recipe(g, recipe, item_name) then
+            refining_graph.visit_recipe(g, recipe)
+            if refining_graph.is_recipe_usable(g, recipe) then
                 table.insert(available_recipes, recipe_name)
             else
                 g.recipes_skipped[recipe.name] = true
@@ -143,7 +142,7 @@ memoize_item = function (g, item_name)
     for type_name in pairs(defines.prototypes["item"]) do
         if data.raw[type_name] ~= nil then
             for _, unspoiled_prototype in pairs(data.raw[type_name]) do
-                if is_unspoiled_of(g, unspoiled_prototype, item_name) then
+                if refining_graph.is_unspoiled_of(g, unspoiled_prototype, item_name) then
                     table.insert(unspoiled_sources, unspoiled_prototype)
                 end
             end
@@ -180,67 +179,70 @@ memoize_item = function (g, item_name)
     if lowest_complexity ~= nil then
         lowest_complexity = lowest_complexity * complexity_multiplier
     end
-    set_item_complexity(g, item_prototype, lowest_complexity)
+    refining_graph.set_item_complexity(g, item_prototype, lowest_complexity)
     g.recipes_visited = {}
     table.remove(g.item_resolve_stack)
 end
 
 --- @param g RefiningGraph
 --- @param recipe data.RecipePrototype
-visit_recipe = function (g, recipe)
-    if not can_visit_recipe(g, recipe)
+function refining_graph.visit_recipe(g, recipe)
+    if not refining_graph.can_visit_recipe(g, recipe)
         then return false end
     g.recipes_visited[recipe.name] = true
     utility.print_if_debug("visit_recipe "..recipe.name)
 
     for i = 1, #recipe.ingredients do
         local ingredient = recipe.ingredients[i]
-        if ingredient.type == "item"
-            then memoize_item(g, ingredient.name) end
+        if ingredient.type == "item" then
+            refining_graph.memoize_item(g, ingredient.name)
+        end
     end
 end
 
 --- @param g RefiningGraph
 --- @param products data.ProductPrototype[]
 --- @param complexity number
-local function set_complexity_from_products(g, products, complexity)
+function refining_graph.set_complexity_from_products(g, products, complexity)
     for i = 1, #products do
         local product = products[i]
         if product.type == "item" then
             local item_prototype = refining_util.get_prototype(product.name, "item")
             if item_prototype ~= nil then
-                set_item_complexity(g, item_prototype, refining_util.compute_complexity_totaled(complexity, product))
+                refining_graph.set_item_complexity(g, item_prototype, refining_util.compute_complexity_totaled(complexity, product))
             end
         end
     end
 end
+
 --- @param g RefiningGraph
 --- @param minable_name string
 --- @param minable data.MinableProperties
 --- @param multiplier number
-local function set_complexity_from_minable(g, minable_name, minable, multiplier)
+function refining_graph.set_complexity_from_minable(g, minable_name, minable, multiplier)
     if minable == nil
         then return end
     local complexity = minable.mining_time * multiplier
     utility.print_if_debug("set_complexity_from_minable "..minable_name.." complexity="..complexity)
 
     local product_list = minable.results or {{type = "item", name = minable.result, amount = minable.count or 1}}
-    set_complexity_from_products(g, product_list, complexity)
+    refining_graph.set_complexity_from_products(g, product_list, complexity)
 end
+
 --- @param g RefiningGraph
 --- @param recipe data.RecipePrototype
 --- @param multiplier number
-local function set_complexity_from_recipe(g, recipe, multiplier)
+function refining_graph.set_complexity_from_recipe(g, recipe, multiplier)
     if recipe == nil
         then return end
     local complexity = recipe.energy_required * multiplier
     utility.print_if_debug("set_complexity_from_recipe "..recipe.name.." complexity="..complexity)
-    set_complexity_from_products(g, recipe.results, complexity)
+    refining_graph.set_complexity_from_products(g, recipe.results, complexity)
 end
 
 --- @param g RefiningGraph
 --- @param item_name string
-local function create_refining_recipe(g, item_name)
+function refining_graph.create_refining_recipe(g, item_name)
     local item_resolved = g.items_resolved[item_name]
     if item_resolved.complexity == nil
         then return end
@@ -278,6 +280,7 @@ local function create_refining_recipe(g, item_name)
     data:extend({{
         type = "recipe",
         name = refine_recipe_name,
+        order = "zz["..item_name.."]",
         localised_name = {"recipe-name.refining", refining_util.get_item_localised_name(item_name)},
         category = "refining",
         icon = nil,
@@ -304,10 +307,4 @@ local function create_refining_recipe(g, item_name)
     })
 end
 
-return {
-    set_complexity_from_products = set_complexity_from_products,
-    set_complexity_from_minable = set_complexity_from_minable,
-    set_complexity_from_recipe = set_complexity_from_recipe,
-    memoize_item = memoize_item,
-    create_refining_recipe = create_refining_recipe
-}
+return refining_graph

@@ -16,6 +16,7 @@ require("prototype.item")
 require("prototype.fluid")
 require("prototype.recipe")
 require("prototype.technology")
+require("prototype.utility-constants")
 
 utility.print_if_debug("[#2.3] Loading compatibility changes")
 
