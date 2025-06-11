@@ -30,6 +30,8 @@ end
 
 --- @param inserter_entity LuaEntity
 local function attempt_set_filter(inserter_entity)
+    if not inserter_entity.valid
+        then return end
     if inserter_entity.use_filters
         then return end
 
