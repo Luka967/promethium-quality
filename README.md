@@ -22,11 +22,6 @@ It has a base quality effect of +100%. Out of the box, it directly **upgrades an
 - Organic items can be refined, but living beings - eggs and fish - don't play well, they are way slower.
 - Things that gain no perks from quality - tiles, transport belts and similar - can't be refined.
 
-# Missing / experimental features
-
-- Report incompatible mods! Because of how refining recipes are generated, some modded items might be impossible to refine.
-- The Refinery can freeze on Aquilo but has no frozen cover.
-
 # Credits
 
 - Hurricane (Discord `@hurricane046`), for the gorgeous Refinery graphics & animation. Used with CC BY license

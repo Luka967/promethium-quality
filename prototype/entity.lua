@@ -192,7 +192,8 @@ data:extend({{
                     }, "normal")
                 }
             }
-        }}
+        }},
+        frozen_patch = create_sprite_layer({"refinery-frozen.png"}, "normal")
     },
     corpse = "big-remnants",
     dying_explosion = "massive-explosion"
