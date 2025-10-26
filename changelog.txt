@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.9.3
+Date: 2025-10-26
+  Compatibility:
+    - Maraxsis sand refining time now follows item merged with K2/K2SO (https://mods.factorio.com/mod/promethium-quality/discussion/68fd402c1630a61d2a97dbb8)
+---------------------------------------------------------------------------------------------------
 Version: 0.9.2
 Date: 2025-06-12
   Graphics:

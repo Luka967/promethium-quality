@@ -83,7 +83,7 @@ data:extend({{
     },
     module_slots = 3,
     allowed_effects = refinery_allowed_effects,
-    effect_receiver = {base_effect = {quality = 10}},
+    effect_receiver = {base_effect = {quality = 100}},
 
     crafting_categories = {"refining"},
     crafting_speed = 1,
