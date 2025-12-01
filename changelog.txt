@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.9.4
+Date: 2025-12-01
+  Bugfixes:
+    - Fixed that Refinery had 10x the intended base quality (https://mods.factorio.com/mod/promethium-quality/discussion/692bfe87485a16ca8ebb18ba)
+---------------------------------------------------------------------------------------------------
 Version: 0.9.3
 Date: 2025-10-26
   Compatibility:
