@@ -8,7 +8,7 @@ It has a base quality effect of +100%. Out of the box, it directly **upgrades an
 
 - **Speed module effects break the upgrade guarantee**.
 - Even though most items can be refined - even science packs - their refining time also depends on all the ingredients of the production chain.
-- 1 promethium chunk satsifies 1 Refinery for 10 minutes of constant operation.
+- 1 promethium chunk satisfies 1 Refinery for 10 minutes of constant operation.
 
 ![Factoriopedia entries](https://files.catbox.moe/hol3wq.png)
 
