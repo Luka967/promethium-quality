@@ -11,6 +11,7 @@ utility.print_if_debug("[#2.1] Mod list:\n"..serpent.block(mods))
 
 utility.print_if_debug("[#2.2] Loading prototypes")
 
+require("prototype.quality")
 require("prototype.entity")
 require("prototype.item")
 require("prototype.fluid")

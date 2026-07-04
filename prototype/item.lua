@@ -1,4 +1,4 @@
-local utility = require("__promethium-quality__.utility")
+local utility = require("__promethium-quality__.utility") --- @module "utility"
 local sounds = require("sounds")
 
 local modifiers = utility.get_startup_settings()

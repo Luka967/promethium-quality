@@ -10,18 +10,18 @@ data.raw["item"]["sulfur"].refine_complexity = 30 -- Artificially inflate
 data.raw["item"]["uranium-238"].refine_complexity = 120
 data.raw["item"]["lithium"].refine_complexity = 10 -- Artificially inflate
 -- Science packs get predetermined refining times
-data.raw["tool"]["automation-science-pack"].refine_complexity = utility.refine_time(0.5, modifiers.refine_lean)
-data.raw["tool"]["logistic-science-pack"].refine_complexity = utility.refine_time(1, modifiers.refine_lean)
-data.raw["tool"]["military-science-pack"].refine_complexity = utility.refine_time(2.5, modifiers.refine_lean)
-data.raw["tool"]["chemical-science-pack"].refine_complexity = utility.refine_time(4, modifiers.refine_lean)
-data.raw["tool"]["production-science-pack"].refine_complexity = utility.refine_time(8, modifiers.refine_lean)
-data.raw["tool"]["utility-science-pack"].refine_complexity = utility.refine_time(10, modifiers.refine_lean)
-data.raw["tool"]["space-science-pack"].refine_complexity = utility.refine_time(0.2, modifiers.refine_lean)
-data.raw["tool"]["metallurgic-science-pack"].refine_complexity = utility.refine_time(5, modifiers.refine_lean)
-data.raw["tool"]["agricultural-science-pack"].refine_complexity = utility.refine_time(5, modifiers.refine_lean)
-data.raw["tool"]["electromagnetic-science-pack"].refine_complexity = utility.refine_time(5, modifiers.refine_lean)
-data.raw["tool"]["cryogenic-science-pack"].refine_complexity = utility.refine_time(10, modifiers.refine_lean)
-data.raw["tool"]["promethium-science-pack"].refine_complexity = utility.refine_time(20, modifiers.refine_lean)
+data.raw["item"]["automation-science-pack"].refine_complexity = utility.refine_time(0.5, modifiers.refine_lean)
+data.raw["item"]["logistic-science-pack"].refine_complexity = utility.refine_time(1, modifiers.refine_lean)
+data.raw["item"]["military-science-pack"].refine_complexity = utility.refine_time(2.5, modifiers.refine_lean)
+data.raw["item"]["chemical-science-pack"].refine_complexity = utility.refine_time(4, modifiers.refine_lean)
+data.raw["item"]["production-science-pack"].refine_complexity = utility.refine_time(8, modifiers.refine_lean)
+data.raw["item"]["utility-science-pack"].refine_complexity = utility.refine_time(10, modifiers.refine_lean)
+data.raw["item"]["space-science-pack"].refine_complexity = utility.refine_time(0.2, modifiers.refine_lean)
+data.raw["item"]["metallurgic-science-pack"].refine_complexity = utility.refine_time(5, modifiers.refine_lean)
+data.raw["item"]["agricultural-science-pack"].refine_complexity = utility.refine_time(5, modifiers.refine_lean)
+data.raw["item"]["electromagnetic-science-pack"].refine_complexity = utility.refine_time(5, modifiers.refine_lean)
+data.raw["item"]["cryogenic-science-pack"].refine_complexity = utility.refine_time(10, modifiers.refine_lean)
+data.raw["item"]["promethium-science-pack"].refine_complexity = utility.refine_time(20, modifiers.refine_lean)
 
 -- Intentionally disabled refining
 data.raw["item"]["scrap"].auto_refine = false

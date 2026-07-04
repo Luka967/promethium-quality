@@ -1,9 +1,9 @@
 {
     "name": "promethium-quality",
-    "version": "0.9.4",
+    "version": "1.0.0",
     "title": "Promethium is Quality",
     "author": "HermanyAI",
-    "factorio_version": "2.0",
+    "factorio_version": "2.1",
     "dependencies": [
         "base >= 2.0.35",
         "space-age >= 2.0.35",

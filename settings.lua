@@ -58,10 +58,4 @@ data:extend({{
     setting_type = "startup",
     default_value = false,
     order = "bg"
-}, {
-    type = "bool-setting",
-    name = "refinery-auto-set-input-filter",
-    setting_type = "runtime-per-user",
-    default_value = true,
-    order = "a"
 }})

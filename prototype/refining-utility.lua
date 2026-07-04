@@ -2,7 +2,7 @@ local refining_utility = {}
 
 -- Ripped out of recycling recipe generation
 -- Thank you factorio devs >.<
---- @param name string
+--- @param name data.ItemID|data.FluidID
 --- @param base_prototype string
 --- @return data.ItemPrototype|nil
 --- @return string|nil
@@ -16,9 +16,9 @@ function refining_utility.get_prototype(name, base_prototype)
     return nil, nil
 end
 function refining_utility.generate_refining_recipe_icon(item)
-    local icons = table.deepcopy(item.icons or {{icon = item.icon, icon_size = item.icon_size or defines.default_icon_size}})
+    local icons = table.deepcopy(item.icons or {{icon = item.icon, icon_size = item.icon_size or defines.constant.default_icon_size}})
     for _, icon in ipairs(icons) do
-        icon.scale = (0.5 * defines.default_icon_size / (item.icon_size or defines.default_icon_size)) * 0.8
+        icon.scale = (0.5 * defines.constant.default_icon_size / (item.icon_size or defines.constant.default_icon_size)) * 0.8
         if icon.shift ~= nil then
             icon.shift = util.mul_shift(icon.shift, 0.8)
         end
@@ -28,6 +28,7 @@ function refining_utility.generate_refining_recipe_icon(item)
     })
     return icons
 end
+--- @param name data.ItemID|data.FluidID
 function refining_utility.get_item_localised_name(name)
     local item = refining_utility.get_prototype(name, "item")
     if not item then return end
@@ -56,20 +57,28 @@ end
 --- @param total number
 --- @param product data.ItemProductPrototype
 function refining_utility.compute_complexity_totaled(total, product)
-    local product_min = product.amount or product.amount_min
-    local product_max = product.amount or product.amount_max
-    local product_avg = (product_min + product_max) / 2 * (product.probability or 1)
+    local independent_probability = product.independent_probability or 1
+    local shared_probability_min = product.shared_probability and product.shared_probability.min or 0
+    local shared_probability_max = product.shared_probability and product.shared_probability.max or 1
+    local probability = independent_probability * (shared_probability_max - shared_probability_min)
+    local product_min = product.amount_min or product.amount or 1
+    local product_max = product.amount_max or product.amount or 1
+    local product_avg = product_min + (product_max - product_min) * probability
     return total / product_avg
 end
+
 --- @param g RefiningGraph
 --- @param ingredients data.IngredientPrototype[]
 --- @param product data.ItemProductPrototype
 function refining_utility.compute_complexity(g, ingredients, product)
-    local total = 0
+    local total = 0.
     for i = 1, #ingredients do
         local ingredient = ingredients[i]
         if ingredient.type == "item" then
-            total = total + ingredient.amount * g.items_resolved[ingredient.name].complexity
+            local resolved = g.items_resolved[ingredient.name]
+            --- @cast resolved.complexity -nil
+
+            total = total + ingredient.amount * resolved.complexity
         end
     end
     return refining_utility.compute_complexity_totaled(total, product)

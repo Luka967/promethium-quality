@@ -1,17 +1,21 @@
+--- @class data.ItemPrototype
+--- @field auto_refine? boolean
+--- @field refine_complexity? number
+
 local refining_graph = {}
 
 --- @class RefiningGraphResolvedItem
 --- @field prototype data.ItemPrototype
---- @field complexity number|nil
+--- @field complexity? number
 
 --- @class RefiningGraph
---- @field items_resolved table<string, RefiningGraphResolvedItem> K-V pair of item name and its complexity
+--- @field items_resolved table<(data.ItemID|data.FluidID), RefiningGraphResolvedItem> K-V pair of item name and its complexity
 --- @field item_resolve_stack string[] List of items that required this item resolved
 --- @field recipes_skipped table<string, boolean>
 --- @field recipes_visited table<string, boolean>
 
 local refining_util = require("refining-utility")
-local utility = require("__promethium-quality__.utility")
+local utility = require("__promethium-quality__.utility") --- @module "utility"
 
 local modifiers = utility.get_startup_settings()
 
@@ -23,7 +27,7 @@ function refining_graph.can_visit_recipe(g, recipe, target_item)
         then return false end
     if recipe.ingredients == nil or recipe.results == nil
         then return false end
-    if recipe.category == "recycling-or-hand-crafting" or recipe.category == "recycling"
+    if utility.recipe_has_category(recipe, "recycling-or-hand-crafting") or utility.recipe_has_category(recipe, "recycling")
         then return false end
     local has_item_ingredient = false
     for i = 1, #recipe.ingredients do
@@ -44,7 +48,7 @@ end
 --- @param recipe data.RecipePrototype
 function refining_graph.is_recipe_usable(g, recipe)
     for i = 1, #recipe.ingredients do
-        local ingredient = recipe.ingredients[i]
+        local ingredient = recipe.ingredients--[[@cast -nil]][i]
         -- This can be nil if it was tried to be visited twice by some recipe loop
         local resolved_ingredient = g.items_resolved[ingredient.name]
         if ingredient.type == "item" and (resolved_ingredient == nil or resolved_ingredient.complexity == nil) then
@@ -80,7 +84,7 @@ end
 
 --- @param g RefiningGraph
 --- @param unspoiled_prototype data.ItemPrototype
---- @param item_name string
+--- @param item_name data.ItemID|data.FluidID
 function refining_graph.is_unspoiled_of(g, unspoiled_prototype, item_name)
     if unspoiled_prototype.spoil_result ~= item_name
         then return end
@@ -90,7 +94,7 @@ function refining_graph.is_unspoiled_of(g, unspoiled_prototype, item_name)
 end
 
 --- @param g RefiningGraph
---- @param item_name string
+--- @param item_name data.ItemID|data.FluidID
 function refining_graph.memoize_item(g, item_name)
     if g.items_resolved[item_name] ~= nil
         then return end
@@ -150,20 +154,24 @@ function refining_graph.memoize_item(g, item_name)
     end
     utility.print_if_debug("memoize_item "..item_name.." depth="..#g.item_resolve_stack.." #unspoiled_sources="..#unspoiled_sources)
 
-    local lowest_complexity = nil
-    local lowest_ingredient_fluids = nil
+    local lowest_complexity = nil --- @type number?
+    local lowest_ingredient_fluids = nil --- @type number?
     for i = 1, #unspoiled_sources do
         local unspoiled_complexity = g.items_resolved[unspoiled_sources[i].name].complexity
-        lowest_ingredient_fluids = 0
-        lowest_complexity = math.min(lowest_complexity or unspoiled_complexity, unspoiled_complexity)
+        if unspoiled_complexity ~= nil then
+            lowest_ingredient_fluids = 0
+            lowest_complexity = math.min(lowest_complexity or unspoiled_complexity, unspoiled_complexity)
+        end
     end
     for i = 1, #available_recipes do
         local recipe = data.raw["recipe"][available_recipes[i]]
-        local recipe_result
-        for i = 1, #recipe.results do
-            local product = recipe.results[i]
+        --- @cast recipe.ingredients -nil
+
+        local recipe_result --- @type data.ItemProductPrototype
+        for j = 1, #recipe.results do
+            local product = recipe.results--[[@cast -nil]][j]
             if product.type == "item" and product.name == item_name
-                then recipe_result = product break end
+                then recipe_result = product --[[@as data.ItemProductPrototype]] break end
         end
         local recipe_complexity = refining_util.compute_complexity(g, recipe.ingredients, recipe_result)
 
@@ -187,6 +195,8 @@ end
 --- @param g RefiningGraph
 --- @param recipe data.RecipePrototype
 function refining_graph.visit_recipe(g, recipe)
+    assert(recipe.ingredients, "refining_graph.visit_recipe recipe.ingredients nil")
+
     if not refining_graph.can_visit_recipe(g, recipe)
         then return false end
     g.recipes_visited[recipe.name] = true
@@ -207,6 +217,7 @@ function refining_graph.set_complexity_from_products(g, products, complexity)
     for i = 1, #products do
         local product = products[i]
         if product.type == "item" then
+            --- @cast product data.ItemProductPrototype
             local item_prototype = refining_util.get_prototype(product.name, "item")
             if item_prototype ~= nil then
                 refining_graph.set_item_complexity(g, item_prototype, refining_util.compute_complexity_totaled(complexity, product))
@@ -217,7 +228,7 @@ end
 
 --- @param g RefiningGraph
 --- @param minable_name string
---- @param minable data.MinableProperties
+--- @param minable data.MinableProperties?
 --- @param multiplier number
 function refining_graph.set_complexity_from_minable(g, minable_name, minable, multiplier)
     if minable == nil
@@ -225,23 +236,37 @@ function refining_graph.set_complexity_from_minable(g, minable_name, minable, mu
     local complexity = minable.mining_time * multiplier
     utility.print_if_debug("set_complexity_from_minable "..minable_name.." complexity="..complexity)
 
+    --- @diagnostic disable-next-line: assign-type-mismatch
+    --- @type data.ProductPrototype[]
     local product_list = minable.results or {{type = "item", name = minable.result, amount = minable.count or 1}}
     refining_graph.set_complexity_from_products(g, product_list, complexity)
 end
 
 --- @param g RefiningGraph
---- @param recipe data.RecipePrototype
+--- @param recipe data.RecipePrototype?
 --- @param multiplier number
 function refining_graph.set_complexity_from_recipe(g, recipe, multiplier)
     if recipe == nil
         then return end
-    local complexity = recipe.energy_required * multiplier
+    local complexity = (recipe.energy_required or 0.5) * multiplier
     utility.print_if_debug("set_complexity_from_recipe "..recipe.name.." complexity="..complexity)
-    refining_graph.set_complexity_from_products(g, recipe.results, complexity)
+    refining_graph.set_complexity_from_products(g, recipe.results or {}, complexity)
+end
+
+local quality_id_before_final = "normal" --- @type data.QualityID
+while true do
+    local quality_proto = data.raw.quality[quality_id_before_final]
+    if not quality_proto.next then
+        break
+    end
+    if data.raw.quality[quality_proto.next].next == nil then
+        break
+    end
+    quality_id_before_final = quality_proto.next
 end
 
 --- @param g RefiningGraph
---- @param item_name string
+--- @param item_name data.ItemID|data.FluidID
 function refining_graph.create_refining_recipe(g, item_name)
     local item_resolved = g.items_resolved[item_name]
     if item_resolved.complexity == nil
@@ -276,13 +301,14 @@ function refining_graph.create_refining_recipe(g, item_name)
         overload_multiplier = 1
     end
 
-    local refine_recipe_name = item_name .. "-refining"
+    local refine_recipe_name = item_name .. "-refining-"
+
     data:extend({{
         type = "recipe",
         name = refine_recipe_name,
         order = "zz["..item_name.."]",
         localised_name = {"recipe-name.refining", refining_util.get_item_localised_name(item_name)},
-        category = "refining",
+        categories = {"refining"},
         icon = nil,
         icons = refining_util.generate_refining_recipe_icon(item_resolved.prototype),
         energy_required = final_time,
@@ -294,14 +320,15 @@ function refining_graph.create_refining_recipe(g, item_name)
         auto_recycle = false,
         ingredients = {
             {type = "fluid", name = "promethium-emulsion", amount = fluid_requirement},
-            {type = "item", name = item_name, amount = 1}
+            {type = "item", name = item_name, amount = 1, quality_max = quality_id_before_final}
         },
         results = {
-            {type = "item", name = item_name, amount = 1}
+            {type = "item", name = item_name, amount = 1, quality_change = 1, quality_min = "normal"}
         },
         overload_multiplier = overload_multiplier
     }})
-    table.insert(data.raw["technology"]["refinery"].effects, {
+
+    table.insert(data.raw["technology"]["refinery"].effects --[[@cast -nil]], {
         type = "unlock-recipe",
         recipe = refine_recipe_name
     })

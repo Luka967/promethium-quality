@@ -1,3 +1,4 @@
+--- @module "utility"
 local utility = require("__promethium-quality__.utility")
 
 require("base")

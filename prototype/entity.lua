@@ -11,7 +11,7 @@ local modifiers = utility.get_startup_settings()
 
 local refinery_allowed_effects = {"consumption", "speed", "pollution"}
 if modifiers.refinery_allow_quality then
-    refinery_allowed_effects[4] = "quality"
+    table.insert(refinery_allowed_effects, "quality")
 end
 
 --- @param filenames string[]
@@ -51,7 +51,6 @@ data:extend({{
     type = "furnace",
     name = "refinery",
     icon = "__promethium-quality__/graphics/icons/refinery.png",
-    icon_size = 64,
 
     flags = {"placeable-neutral","placeable-player", "player-creation"},
     minable = {mining_time = 0.2, result = "refinery"},
@@ -83,7 +82,9 @@ data:extend({{
     },
     module_slots = 3,
     allowed_effects = refinery_allowed_effects,
-    effect_receiver = {base_effect = {quality = 10}},
+    effect_receiver = {
+        quality_limits = {low = -1}
+    },
 
     crafting_categories = {"refining"},
     crafting_speed = 1,
@@ -120,7 +121,7 @@ data:extend({{
 
     icon_draw_specification = {shift = {0, 0.7}, scale = 1.25},
     icons_positioning = {
-        {inventory_index = defines.inventory.furnace_modules, shift = {0, 1.5}}
+        {inventory_index = defines.inventory.crafter_modules, shift = {0, 1.5}}
     },
     perceived_performance = {
         minimum = 0.25,

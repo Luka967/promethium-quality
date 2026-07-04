@@ -10,9 +10,17 @@ local g = {
     recipes_visited = {}
 }
 
-utility.print_if_debug("[#3.1] Autosetting complexity to science packs")
+utility.print_if_debug("[#3.1] Autosetting complexity to modded science packs")
 
-for _, item in pairs(data.raw["tool"]) do
+--- @type table<string, unknown>
+local science_packs = {}
+for _, entity in pairs(data.raw["lab"]) do
+    for _, item_name in pairs(entity.inputs) do
+        science_packs[item_name] = true
+    end
+end
+for item_name in pairs(science_packs) do
+    local item = data.raw["item"][item_name]
     if item.refine_complexity == nil then
         utility.print_if_debug("Triggered for "..item.name)
         item.refine_complexity = utility.refine_time(modifiers.modded_science_pack_refine_time, modifiers.refine_lean)

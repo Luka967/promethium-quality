@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.0
+Date: 2026-06-28
+  Features:
+    - Updated for Factorio 2.1 - listed changes are incorporating its new features for a similar experience
+  Changes:
+    - Refining recipes now guarantee exactly +1 quality step
+    - Refinery now has 0% base quality, minimum -100%, with negative rolling backwards from guaranteed +1 quality step
+    - Refining highest (e.g. legendary) quality will not work anymore
+    - Inserters into refinery no longer automatically blacklist highest quality
+  Balancing:
+    - Refining recipes will no longer jump through multiple quality steps
+---------------------------------------------------------------------------------------------------
 Version: 0.9.4
 Date: 2025-12-01
   Bugfixes:
