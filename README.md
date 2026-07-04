@@ -4,7 +4,7 @@ This mod adds a new machine to the end-game, the **Refinery**. You unlock it aft
 
 ![Refinery preview](https://files.catbox.moe/7wyhip.png)
 
-Refining recipes **upgrade an item to at the next quality level**, **with no resource loss**.
+Refining recipes **upgrade an item to the next quality tier**, **with no resource loss**.
 
 - **Speed module effects break the upgrade guarantee**.
 - Even though most items can be refined - even science packs - their refining time also depends on all the ingredients of the production chain.
