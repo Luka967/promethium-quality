@@ -1,6 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.1
+Date: 2026-07-06
+  Bugfixes:
+    - Fixed refining recipes only working on normal quality
+---------------------------------------------------------------------------------------------------
 Version: 1.0.0
-Date: 2026-06-28
+Date: 2026-07-05
   Features:
     - Updated for Factorio 2.1 - listed changes are incorporating its new features for a similar experience
   Changes:

@@ -325,7 +325,8 @@ function refining_graph.create_refining_recipe(g, item_name)
         results = {
             {type = "item", name = item_name, amount = 1, quality_change = 1, quality_min = "normal"}
         },
-        overload_multiplier = overload_multiplier
+        overload_multiplier = overload_multiplier,
+        can_set_quality = true
     }})
 
     table.insert(data.raw["technology"]["refinery"].effects --[[@cast -nil]], {
