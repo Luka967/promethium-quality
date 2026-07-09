@@ -5,9 +5,9 @@
     "author": "HermanyAI",
     "factorio_version": "2.1",
     "dependencies": [
-        "base >= 2.0.35",
-        "space-age >= 2.0.35",
-        "quality >= 2.0.35",
+        "base >= 2.1.7",
+        "space-age >= 2.1.7",
+        "quality >= 2.1.7",
         "(?) maraxsis >= 1.28.13"
     ],
     "description": "Give promethium asteroid chunks another purpose. Turn them into a catalyst for refining an item's quality at no loss.",

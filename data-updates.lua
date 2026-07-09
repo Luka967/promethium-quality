@@ -20,7 +20,7 @@ for _, entity in pairs(data.raw["lab"]) do
     end
 end
 for item_name in pairs(science_packs) do
-    local item = data.raw["item"][item_name]
+    local item = data.raw["tool"][item_name] or data.raw["item"][item_name]
     if item.refine_complexity == nil then
         utility.print_if_debug("Triggered for "..item.name)
         item.refine_complexity = utility.refine_time(modifiers.modded_science_pack_refine_time, modifiers.refine_lean)
