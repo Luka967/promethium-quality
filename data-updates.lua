@@ -85,7 +85,7 @@ utility.print_if_debug("[#3.5] Autosetting complexity from smelting recipes")
 for _, recipe in pairs(data.raw["recipe"]) do
     if
         utility.recipe_has_basics(recipe)
-        and recipe.category == "smelting"
+        and utility.recipe_has_category(recipe, "smelting")
         and #utility.recipe_ingredients(recipe, "item") == 1
         and #utility.recipe_ingredients(recipe, "fluid") == 0
     then

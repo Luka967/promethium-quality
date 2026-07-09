@@ -3,6 +3,7 @@ Version: 1.0.2
 Date: 2026-07-09
   Bugfixes:
     - Fixed crash where mods define new science packs as tools
+    - Fixed recipes in smelting category not having their complexity set
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.1
 Date: 2026-07-06
