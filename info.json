@@ -1,6 +1,6 @@
 {
     "name": "promethium-quality",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "title": "Promethium is Quality",
     "author": "HermanyAI",
     "factorio_version": "2.1",
@@ -8,7 +8,8 @@
         "base >= 2.1.7",
         "space-age >= 2.1.7",
         "quality >= 2.1.7",
-        "(?) maraxsis >= 1.28.13"
+        "(?) maraxsis >= 1.28.13",
+        "(?) lignumis >= 2.3.2"
     ],
     "description": "Give promethium asteroid chunks another purpose. Turn them into a catalyst for refining an item's quality at no loss.",
     "spoiling_required": true,

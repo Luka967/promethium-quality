@@ -301,7 +301,7 @@ function refining_graph.create_refining_recipe(g, item_name)
         overload_multiplier = 1
     end
 
-    local refine_recipe_name = item_name .. "-refining-"
+    local refine_recipe_name = item_name .. "-refining"
 
     data:extend({{
         type = "recipe",
