@@ -8,7 +8,7 @@ Refining recipes **upgrade an item to the next quality tier**, **with no resourc
 
 - **Speed module effects break the upgrade guarantee**.
 - Even though most items can be refined - even science packs - their refining time also depends on all the ingredients of the production chain.
-- 1 promethium chunk satsifies 1 Refinery for 10 minutes of constant operation.
+- 1 promethium chunk satisfies 1 Refinery for 10 minutes of constant operation.
 
 # More technical details
 
